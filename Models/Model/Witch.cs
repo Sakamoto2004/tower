@@ -10,7 +10,7 @@ public class Witch : Entity{
         :base(){
             _timePerFrame = (float) 1 / _numberOfFrame;
             _totalElapsed = 0;
-            Rotation = 1;
+            Rotation = 0;
             Paused = false;
             Scale = 2;
             Depth = 1;

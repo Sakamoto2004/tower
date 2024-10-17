@@ -20,7 +20,8 @@ public class Entity{
 
     public void LoadSource(Rectangle rect, int frames){
         _numberOfFrame = frames;
-        _currentFrame = -1;
+        _timePerFrame = (float)1 / _numberOfFrame;
+        _currentFrame = 0;
         SourceRectangle = new Rectangle[frames];
         for( int index = 0; index < frames; ++index ){
             SourceRectangle[index].X = 0;
@@ -30,6 +31,7 @@ public class Entity{
         }
 
         effect = SpriteEffects.None;
+        
     }
 
     public void NextFrame(){
@@ -47,6 +49,7 @@ public class Entity{
             return;
 
         _totalElapsed += elapsed;
+        Console.WriteLine(_currentFrame);
         if(_totalElapsed > _timePerFrame){
             NextFrame();
             _totalElapsed -= _timePerFrame;
