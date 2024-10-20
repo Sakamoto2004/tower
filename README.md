@@ -24,7 +24,7 @@
 - [ ] Grabbing
 - [ ] Hurting
   - [ ] Armed
-  - [ ] Unarmed
+  - [x] Unarmed
 - [ ] Idling
   - [ ] Armed
   - [ ] Unarmed

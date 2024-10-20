@@ -17,6 +17,8 @@ public class Knight : Entity{
     private Constants.Knight.UnequippedState _currentUnequippedState{ get; set; }
     private  Constants.Knight.EquippedState _currentEquippedState{ get; set; }
 
+    private short _health;
+    private bool _isHurting;
     private bool _isCrouching;
     private int _armed;
     private int _unarmed;
@@ -31,6 +33,8 @@ public class Knight : Entity{
         _timePerFrame = _frameCycle / _maxFrame;
         _armed = 1;
         _unarmed = 0;
+        _health = 5;
+        _isHurting = false;
     }
 
     public void Load(ContentManager content){
@@ -160,26 +164,49 @@ public class Knight : Entity{
         }
     }
 
+    public void Hurting(float elapsed){
+        if( _isHurting == true ){
+            if( _currentFrame == _maxFrame - 1 && _totalElapsed + elapsed >= _timePerFrame )
+                _isHurting = false;
+            UpdateFrame(elapsed);
+                Console.WriteLine("Current frame: " + _currentFrame);
+            return;
+        }
+        if( _currentUnequippedState == UnequippedState.Total ){
+            ChangeEquippedState(EquippedState.Hurting);
+        } else {
+            ChangeUnequippedState(UnequippedState.Hurting);
+        }
+        _isHurting = true;
+        --_health;
+    }
+
     public void Control(float elapsed){
+        if( _isHurting == true ){
+            Hurting( elapsed );
+            return;
+        }
         if( Keyboard.GetState().IsKeyDown(Keys.Left) )
             MoveLeft(elapsed);
         else if( Keyboard.GetState().IsKeyDown(Keys.Right) )
             MoveRight(elapsed);
         else if( Keyboard.GetState().IsKeyDown(Keys.LeftControl) )
             Crouching(elapsed);
-        else if( Keyboard.GetState().IsKeyUp( Keys.LeftControl ) ){
-            Speed = WalkingSpeed;
-            _isCrouching = false;
-        }
 
         else if( Keyboard.GetState().IsKeyDown(Keys.Space) )
             ChangeEquippedState(EquippedState.Attack1);
         else if( Keyboard.GetState().IsKeyDown(Keys.A) )
             ChangeEquippedState(EquippedState.Crouching);
-        else if( Keyboard.GetState().IsKeyDown(Keys.K) )
-            ChangeEquippedState(EquippedState.Dying);
         else if( Keyboard.GetState().IsKeyDown(Keys.E) )
             ChangeUnequippedState(UnequippedState.Drinking);
+        else if( Keyboard.GetState().IsKeyDown(Keys.K) ){
+            Hurting( elapsed );
+            return;
+        }
+        else if( Keyboard.GetState().IsKeyUp( Keys.LeftControl ) ){
+            Speed = WalkingSpeed;
+            _isCrouching = false;
+        }
 
         if( Keyboard.GetState().GetPressedKeyCount() == 0 )
             Idling(elapsed);
