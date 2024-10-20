@@ -17,6 +17,7 @@ public class Knight : Entity{
     private Constants.Knight.UnequippedState _currentUnequippedState{ get; set; }
     private  Constants.Knight.EquippedState _currentEquippedState{ get; set; }
 
+    private bool _isDrinking;
     private short _health;
     private bool _isHurting;
     private bool _isCrouching;
@@ -169,7 +170,6 @@ public class Knight : Entity{
             if( _currentFrame == _maxFrame - 1 && _totalElapsed + elapsed >= _timePerFrame )
                 _isHurting = false;
             UpdateFrame(elapsed);
-                Console.WriteLine("Current frame: " + _currentFrame);
             return;
         }
         if( _currentUnequippedState == UnequippedState.Total ){
@@ -181,7 +181,25 @@ public class Knight : Entity{
         --_health;
     }
 
+    public void Drinking( float elapsed ){
+         if( _isDrinking == true ){
+            if( _currentFrame == _maxFrame - 1 && _totalElapsed + elapsed >= _timePerFrame ){
+                _isDrinking = false;
+                ++_health;
+            }
+            UpdateFrame(elapsed);
+            return;
+         }
+         ChangeUnequippedState(UnequippedState.Drinking);
+         _timePerFrame = (float) 1 / _maxFrame;
+         _isDrinking = true;
+    }
+
     public void Control(float elapsed){
+        if( _isDrinking == true ){
+            Drinking( elapsed );
+            return;
+        }
         if( _isHurting == true ){
             Hurting( elapsed );
             return;
@@ -198,7 +216,7 @@ public class Knight : Entity{
         else if( Keyboard.GetState().IsKeyDown(Keys.A) )
             ChangeEquippedState(EquippedState.Crouching);
         else if( Keyboard.GetState().IsKeyDown(Keys.E) )
-            ChangeUnequippedState(UnequippedState.Drinking);
+            Drinking( elapsed );
         else if( Keyboard.GetState().IsKeyDown(Keys.K) ){
             Hurting( elapsed );
             return;
