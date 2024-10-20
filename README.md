@@ -15,7 +15,7 @@
 - [ ] Attack
 - [ ] Dashing
 - [x] Drinking
-- [ ] Dying
+- [x] Dying
   - [ ] Armed
   - [ ] Unarmed
 - [ ] Falling

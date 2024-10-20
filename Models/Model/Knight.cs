@@ -195,7 +195,24 @@ public class Knight : Entity{
          _isDrinking = true;
     }
 
+    public bool IsDeath(){
+        if( _health == 0 )
+            return true;
+        return false;
+    }
+
+    public void Dying( float elapsed ){
+        if( _currentUnequippedState == UnequippedState.Total )
+            ChangeEquippedState( EquippedState.Dying );
+        else ChangeUnequippedState( UnequippedState.Dying );
+        UpdateToggleFrame( elapsed );
+    }
+
     public void Control(float elapsed){
+        if( IsDeath() == true ){
+            Dying( elapsed );
+            return;
+        }
         if( _isDrinking == true ){
             Drinking( elapsed );
             return;
