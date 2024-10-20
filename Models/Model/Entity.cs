@@ -4,59 +4,92 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Models.Model;
 
 public class Entity{
-    public Texture2D Texture{ get; set; }
-    public Rectangle[] SourceRectangle{ get; set; }
     public Vector2 Position{ get; set; }
-    public float Speed{ get; set; }
-    public bool Paused{get; set; }    
-    protected int _numberOfFrame;
-    protected int _currentFrame;
-    protected float _timePerFrame;
-    protected float _totalElapsed;
+    public int Speed{ get; set; }
+    public bool Paused{ get; set; }    
+    public float Rotation{ get; set; }
+    public float Scale{ get; set; }
+    public float Depth{ get; set; }
+    public Vector2 Origin{ get; set; }
+    public SpriteEffects TextureEffect{ get; set; }
 
-    public float Rotation, Scale, Depth;
-    public Vector2 Origin;
-    public SpriteEffects effect;
+    protected float _frameCycle{ get; set; }
+    protected int _currentFrame{ get; set; }
+    protected float _totalElapsed{ get; set; }
+    protected float _timePerFrame{ get; set; }
+    protected int _maxFrame { get; set; }
 
-    public void LoadSource(Rectangle rect, int frames){
-        _numberOfFrame = frames;
-        _timePerFrame = (float)1 / _numberOfFrame;
-        _currentFrame = 0;
-        SourceRectangle = new Rectangle[frames];
-        for( int index = 0; index < frames; ++index ){
-            SourceRectangle[index].X = 0;
-            SourceRectangle[index].Y = rect.Height * index;
-            SourceRectangle[index].Height = rect.Height;
-            SourceRectangle[index].Width = rect.Width;
-        }
-
-        effect = SpriteEffects.None;
-        
+    public Entity(){
+        Position = Vector2.Zero;
+        Speed = 0;
+        Paused = true;
+        Rotation = 0;
+        Scale = 1;
+        Depth = 0;
+        Origin = Vector2.Zero;
+        TextureEffect = SpriteEffects.None;
     }
 
-    public void NextFrame(){
-        if( _currentFrame == _numberOfFrame - 1)
+    public virtual void LoadSource(){
+        TextureEffect = SpriteEffects.None;
+    }
+
+    public virtual void NextFrame(){
+        if( _currentFrame == _maxFrame - 1)
             _currentFrame = 0;
         else _currentFrame += 1;
     }
 
-    public Rectangle CurrentFrameSource(){
-        return SourceRectangle[_currentFrame];
+    public void NextToggleFrame(){
+        if( _currentFrame == _maxFrame - 1 )
+            return;
+        NextFrame();
+    }
+
+    public virtual Rectangle CurrentFrameSource(){
+        return Rectangle.Empty;
     }
 
     public void UpdateFrame(float elapsed){
         if( Paused )
             return;
-
         _totalElapsed += elapsed;
-        Console.WriteLine(_currentFrame);
+        //Console.WriteLine(_totalElapsed + " | " + _timePerFrame);
         if(_totalElapsed > _timePerFrame){
             NextFrame();
             _totalElapsed -= _timePerFrame;
         }
     }
 
-    public void Draw(SpriteBatch batch ){
-        batch.Draw(Texture, Position, CurrentFrameSource(), Color.White, Rotation, Origin, Scale, effect, Depth );    
+    public void UpdateToggleFrame(float elapsed){
+        if( Paused )
+            return;
+        _totalElapsed += elapsed;
+        //Console.WriteLine(_totalElapsed + " | " + _timePerFrame);
+        if(_totalElapsed > _timePerFrame){
+            NextToggleFrame();
+            _totalElapsed -= _timePerFrame;
+        }
     }
+
+    /// This will simply add the @param name="x" and @param name="y" to the position of the object
+    public void ChangePosition( int x, int y ){
+        Vector2 position = Position;
+        position.X += x;
+        position.Y += y;
+        Position = position;
+    }
+
+    public virtual void MoveLeft(float elapsed){
+        ChangePosition(-Speed, 0);
+        TextureEffect = SpriteEffects.FlipHorizontally;
+        UpdateFrame(elapsed);
+    }
+
+    public virtual void MoveRight(float elapsed){
+        ChangePosition(Speed, 0);
+        TextureEffect = SpriteEffects.None;
+        UpdateFrame(elapsed);
+    }
+
 }
