@@ -227,7 +227,7 @@ public class Knight : Entity{
             if (_currentUnequippedState == UnequippedState.Total)
                 ChangeEquippedState(EquippedState.Jumpping);
             else ChangeUnequippedState(UnequippedState.Jumpping);
-            YSpeed = -10;
+            YSpeed = -20;
         }
     }
 

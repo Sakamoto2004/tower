@@ -120,7 +120,6 @@ public class Entity{
 //            if( YSpeed < 0 ) ChangePosition( 0, -YSpeed );
 //        }
 //    }
-//
     public bool CheckCollision( Rectangle entity ){
         bool collided = false;
         //This collision check will check the left side of the entity
@@ -135,14 +134,29 @@ public class Entity{
         return collided;
     }
 
+    public void SetPosition( int x, int y ){
+        Rectangle position = Position;
+        position.X = x;
+        position.Y = y;
+        Position = position;
+    }
+
     //This will check X and Y axis for collision, I'll do some optimization for it after some time
     public void HandleCollision( Rectangle entity ){
         ChangePosition( 0, -YSpeed );
         if( CheckCollision( entity ) == true )
             ChangePosition( -XSpeed, 0 );
         ChangePosition( 0, YSpeed );
-        if( CheckCollision( entity ) == true )
-            ChangePosition( 0, -YSpeed );
+        if( CheckCollision( entity ) == true ){
+            if( YSpeed > 0 ){
+                Console.WriteLine("Current YSpeed: " + YSpeed);
+                SetPosition( Position.X,  entity.Y - Position.Height );
+                PhysicEngine.ResetTimer();
+            } else {
+                SetPosition( Position.X, entity.Y + entity.Height );
+            }
+            YSpeed = 0;
+        }
     }
 
     public void printCurrentPosition(){
@@ -150,16 +164,13 @@ public class Entity{
     }
 
     public void Moving( MapObjects objects, float elapsed ){
-        //YSpeed = PhysicEngine.SpeedCalculator(Constants.Knight.FallingAcceleration, YSpeed, elapsed);
-
+        YSpeed = PhysicEngine.SpeedCalculator(Constants.Knight.FallingAcceleration, YSpeed, elapsed);
         ChangePosition( XSpeed, YSpeed );
-
         for( int i = 0; i < objects.Entities.Count; ++i ){
             Entity temp = objects.Entities[i];
             if( temp.CheckCollision( temp.Position ) )
                 HandleCollision(temp.Position);
         }
-        YSpeed = 0;
         XSpeed = 0;
     }
 

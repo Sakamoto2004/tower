@@ -167,7 +167,7 @@ public static class Constants
 
         private static int _walkingSpeed = 5;
         private static int _crouchingSpeed = 2;
-        private static float _fallingAcceleration = 0.5f;
+        private static float _fallingAcceleration = 3f;
 
         public static float FallingAcceleration{
             get => _fallingAcceleration;
