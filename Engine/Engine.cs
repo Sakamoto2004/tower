@@ -75,13 +75,13 @@ public class Engine : Game
         }; 
         _map.Entities[2].Position = new Rectangle(){
             X = _viewport.Width * 1 / 4,
-            Y = 0,
+            Y = 250,
             Width = 10,
             Height = _viewport.Height
         }; 
         _map.Entities[3].Position = new Rectangle(){
             X = _viewport.Width * 3 / 4,
-            Y = 0,
+            Y = 250,
             Width = 30,
             Height = _viewport.Height
         }; 
@@ -115,7 +115,6 @@ public class Engine : Game
         _knight.Draw(_spriteBatch);
         _spriteBatch.Draw(_texture, _knight.Position, Color.White);
         
-
         _spriteBatch.End();
         base.Draw(gameTime);
     }

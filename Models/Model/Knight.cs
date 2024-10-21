@@ -246,11 +246,15 @@ public class Knight : Entity{
         }
         if( Keyboard.GetState().IsKeyDown(Keys.Left) )
             MoveLeft(elapsed);
-        else if( Keyboard.GetState().IsKeyDown(Keys.Right) )
+        if( Keyboard.GetState().IsKeyDown(Keys.Right) )
             MoveRight(elapsed);
-        else if( Keyboard.GetState().IsKeyDown(Keys.LeftControl) )
+        if( Keyboard.GetState().IsKeyDown(Keys.LeftControl) )
             Crouching(elapsed);
 
+        if( Keyboard.GetState().IsKeyDown(Keys.Down) )
+            YSpeed = 5;
+        if( Keyboard.GetState().IsKeyDown(Keys.Up) )
+            YSpeed = -5;
         else if( Keyboard.GetState().IsKeyDown(Keys.Space) )
             Jumping( elapsed );
         else if( Keyboard.GetState().IsKeyDown(Keys.A) )

@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Models.Model;
 
 public class Entity{
+
+    public CollisionChecker CollisionChecker{ get; set; }
     public Rectangle Position{ get; set; }
     public int XSpeed{ get; set; }
     public int YSpeed{ get; set; }
@@ -95,46 +97,70 @@ public class Entity{
         UpdateFrame(elapsed);
     }
 
-    public bool HandleCollision( Rectangle entity ){
-        PhysicEngine.ResetTimer();
+//    public void HandleCollision( Rectangle entity ){
+//        
+//        if( Position.X < entity.X + entity.Width &&
+//                Position.X + Position.Width > entity.X + entity.Width ){
+//            Console.WriteLine("Collided Left");
+//            if( XSpeed < 0 ) ChangePosition( -XSpeed, 0 );
+//        }
+//        if( Position.X + Position.Width > entity.X &&
+//            Position.X < entity.X){
+//           Console.WriteLine("Collided Right");
+//           if( XSpeed > 0 ) ChangePosition( -XSpeed, 0);
+//        }
+//        if( Position.Y + Position.Height > entity.Y &&
+//            Position.Y < entity.Y){
+//            Console.WriteLine("Collided Down");
+//            if( YSpeed > 0 ) ChangePosition( 0, -YSpeed );
+//        }
+//        if( Position.Y + Position.Height > entity.Y + entity.Height &&
+//            Position.Y < entity.Y + entity.Height ){
+//            Console.WriteLine("Collided Up");
+//            if( YSpeed < 0 ) ChangePosition( 0, -YSpeed );
+//        }
+//    }
+//
+    public bool CheckCollision( Rectangle entity ){
         bool collided = false;
         //This collision check will check the left side of the entity
         if (Position.X + Position.Width > entity.X &&
-            Position.X < entity.X + entity.Width)
+            Position.X < entity.X + entity.Width && 
+            Position.Y + Position.Height > entity.Y &&
+            Position.Y < entity.Y + entity.Height
+            )
         {
-            XSpeed = -XSpeed;
             collided = true;
         } 
-        else if( Position.X + Position.Width >= entity.X && Position.X + Position.Width <= entity.X + entity.Width )
-        {
-            YSpeed = 5;
-            XSpeed = -1*XSpeed;
-            collided = true;
-        }
-        else XSpeed = 0;
-        if( Position.Y + Position.Height >= entity.Y &&
-            Position.Y <= entity.Y + entity.Height)
-        {
-            YSpeed = -YSpeed;
-            collided = true;
-        }
         return collided;
     }
 
-    private void printCurrentPosition(){
+    //This will check X and Y axis for collision, I'll do some optimization for it after some time
+    public void HandleCollision( Rectangle entity ){
+        ChangePosition( 0, -YSpeed );
+        if( CheckCollision( entity ) == true )
+            ChangePosition( -XSpeed, 0 );
+        ChangePosition( 0, YSpeed );
+        if( CheckCollision( entity ) == true )
+            ChangePosition( 0, -YSpeed );
+    }
+
+    public void printCurrentPosition(){
         Console.Write(ToString() + "\n=========\n" + $"X: {Position.X}\nY: {Position.Y}\nWidth: {Position.Width}\nHeight: {Position.Height}\n");
     }
 
     public void Moving( MapObjects objects, float elapsed ){
-        YSpeed = PhysicEngine.SpeedCalculator(Constants.Knight.FallingAcceleration, YSpeed, elapsed);
+        //YSpeed = PhysicEngine.SpeedCalculator(Constants.Knight.FallingAcceleration, YSpeed, elapsed);
+
         ChangePosition( XSpeed, YSpeed );
-        foreach(Entity temp in objects.Entities){
-            if( HandleCollision( temp.Position ) ){
-                ChangePosition( XSpeed, YSpeed );
-                printCurrentPosition();
-                temp.printCurrentPosition();
-            }
+
+        for( int i = 0; i < objects.Entities.Count; ++i ){
+            Entity temp = objects.Entities[i];
+            if( temp.CheckCollision( temp.Position ) )
+                HandleCollision(temp.Position);
         }
+        YSpeed = 0;
+        XSpeed = 0;
     }
 
 }
