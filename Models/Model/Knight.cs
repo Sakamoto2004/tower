@@ -220,6 +220,17 @@ public class Knight : Entity{
         UpdateToggleFrame( elapsed );
     }
 
+    public void Jumping( float elapsed)
+    {
+        if (YSpeed == 0)
+        {
+            if (_currentUnequippedState == UnequippedState.Total)
+                ChangeEquippedState(EquippedState.Jumpping);
+            else ChangeUnequippedState(UnequippedState.Jumpping);
+            YSpeed = -10;
+        }
+    }
+
     public void Control(float elapsed){
         if( IsDeath() == true ){
             Dying( elapsed );
@@ -241,7 +252,7 @@ public class Knight : Entity{
             Crouching(elapsed);
 
         else if( Keyboard.GetState().IsKeyDown(Keys.Space) )
-            ChangeEquippedState(EquippedState.Attack1);
+            Jumping( elapsed );
         else if( Keyboard.GetState().IsKeyDown(Keys.A) )
             ChangeEquippedState(EquippedState.Crouching);
         else if( Keyboard.GetState().IsKeyDown(Keys.E) )

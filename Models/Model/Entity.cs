@@ -95,40 +95,46 @@ public class Entity{
         UpdateFrame(elapsed);
     }
 
-    public void HandleCollision( Rectangle entity ){
-        if( Position.X + Position.Width >= entity.X &&
-            Position.X <= entity.X + entity.Width){
+    public bool HandleCollision( Rectangle entity ){
+        PhysicEngine.ResetTimer();
+        bool collided = false;
+        //This collision check will check the left side of the entity
+        if (Position.X + Position.Width > entity.X &&
+            Position.X < entity.X + entity.Width)
+        {
             XSpeed = -XSpeed;
+            collided = true;
+        } 
+        else if( Position.X + Position.Width >= entity.X && Position.X + Position.Width <= entity.X + entity.Width )
+        {
+            YSpeed = 5;
+            XSpeed = -1*XSpeed;
+            collided = true;
         }
-        if( 
+        else XSpeed = 0;
+        if( Position.Y + Position.Height >= entity.Y &&
+            Position.Y <= entity.Y + entity.Height)
+        {
+            YSpeed = -YSpeed;
+            collided = true;
+        }
+        return collided;
     }
 
     private void printCurrentPosition(){
         Console.Write(ToString() + "\n=========\n" + $"X: {Position.X}\nY: {Position.Y}\nWidth: {Position.Width}\nHeight: {Position.Height}\n");
-    }
-    public bool CheckCollision(Rectangle entity){
-            if( Position.X + Position.Width >= entity.X && Position.X <= entity.X + entity.Width &&
-                Position.Y + Position.Height >= entity.Y && Position.Y <= entity.Y + entity.Height){
-
-                return true;
-            }
-        return false;
     }
 
     public void Moving( MapObjects objects, float elapsed ){
         YSpeed = PhysicEngine.SpeedCalculator(Constants.Knight.FallingAcceleration, YSpeed, elapsed);
         ChangePosition( XSpeed, YSpeed );
         foreach(Entity temp in objects.Entities){
-            if( CheckCollision( temp.Position ) == true ){
-                HandleCollision( temp.Position );
+            if( HandleCollision( temp.Position ) ){
                 ChangePosition( XSpeed, YSpeed );
-                PhysicEngine.ResetTimer();
                 printCurrentPosition();
                 temp.printCurrentPosition();
             }
         }
-        Console.WriteLine(YSpeed);
-        XSpeed = 0;
     }
 
 }

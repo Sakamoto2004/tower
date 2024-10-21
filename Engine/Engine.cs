@@ -58,8 +58,8 @@ public class Engine : Game
         _knight.Position = new Rectangle(){
             X = _viewport.Width / 2,
             Y = _viewport.Height / 2,
-            Height = Constants.Knight.SourceSize.Height * (int)_knight.Scale,
-            Width = Constants.Knight.SourceSize.Width * (int)_knight.Scale
+            Height = Constants.Knight.SourceSize.Height,
+            Width = Constants.Knight.SourceSize.Width
         };
         _map.Entities[0].Position = new Rectangle(){
             Y = _viewport.Height * 3 / 4,
@@ -82,7 +82,7 @@ public class Engine : Game
         _map.Entities[3].Position = new Rectangle(){
             X = _viewport.Width * 3 / 4,
             Y = 0,
-            Width = 10,
+            Width = 30,
             Height = _viewport.Height
         }; 
         // TODO: use this.Content to load your game content here
@@ -101,10 +101,21 @@ public class Engine : Game
 
     protected override void Draw(GameTime gameTime)
     {
+        Texture2D _texture;
+
+        _texture = new Texture2D(GraphicsDevice, 1, 1);
+        _texture.SetData(new Color[] { Color.White });
         GraphicsDevice.Clear(Color.Black);
         // TODO: Add your drawing code here
         _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+        foreach(Entity entity in _map.Entities)
+        {
+            _spriteBatch.Draw(_texture, entity.Position, Color.White);
+        }
         _knight.Draw(_spriteBatch);
+        _spriteBatch.Draw(_texture, _knight.Position, Color.White);
+        
+
         _spriteBatch.End();
         base.Draw(gameTime);
     }

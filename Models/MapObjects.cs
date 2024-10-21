@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework.Graphics;
 using Models.Model;
 
 public class MapObjects{
