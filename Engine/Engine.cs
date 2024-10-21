@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Models.Model;
+using Helper;
 
 namespace Engine;
 
@@ -14,6 +15,7 @@ public class Engine : Game
     private Viewport _viewport;
 
     private Knight _knight;
+    private MapObjects _map;
 
     public Engine()
     {
@@ -26,7 +28,13 @@ public class Engine : Game
     {
         // TODO: Add your initialization logic here
 //        _blueWitch = new Witch(){Speed = 5};
-        _knight = new Knight(){ Speed = 5 };
+        _knight = new Knight(){ XSpeed = 5 };
+        _map = new MapObjects();
+
+        _map.AddObject(new Entity());
+        _map.AddObject(new Entity());
+        _map.AddObject(new Entity());
+        _map.AddObject(new Entity());
         base.Initialize();
     }
 
@@ -47,8 +55,36 @@ public class Engine : Game
 
         _viewport = _graphics.GraphicsDevice.Viewport;
 //        _blueWitch.Position = new Vector2(_viewport.Width / 2, _viewport.Height /2 );
-        _knight.Position = new Vector2(_viewport.Width / 2, _viewport.Height /2 );
-
+        _knight.Position = new Rectangle(){
+            X = _viewport.Width / 2,
+            Y = _viewport.Height / 2,
+            Height = Constants.Knight.SourceSize.Height * (int)_knight.Scale,
+            Width = Constants.Knight.SourceSize.Width * (int)_knight.Scale
+        };
+        _map.Entities[0].Position = new Rectangle(){
+            Y = _viewport.Height * 3 / 4,
+            X = 0,
+            Width = _viewport.Width,
+            Height = 10
+        };
+        _map.Entities[1].Position = new Rectangle(){
+            Y = _viewport.Height * 1 / 4,
+            X = 0,
+            Width = _viewport.Width,
+            Height = 10
+        }; 
+        _map.Entities[2].Position = new Rectangle(){
+            X = _viewport.Width * 1 / 4,
+            Y = 0,
+            Width = 10,
+            Height = _viewport.Height
+        }; 
+        _map.Entities[3].Position = new Rectangle(){
+            X = _viewport.Width * 3 / 4,
+            Y = 0,
+            Width = 10,
+            Height = _viewport.Height
+        }; 
         // TODO: use this.Content to load your game content here
     }
 
@@ -59,7 +95,7 @@ public class Engine : Game
         // TODO: Add your update logic here
         float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
         _knight.Control( elapsed );
-
+        _knight.Moving(_map, elapsed);
         base.Update(gameTime);
     }
 

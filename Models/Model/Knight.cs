@@ -104,22 +104,29 @@ public class Knight : Entity{
     }
 
     public void Draw(SpriteBatch batch ){
+        Vector2 position = new Vector2(){ X = Position.X, Y = Position.Y };
         if( _currentUnequippedState == UnequippedState.Total )
-            batch.Draw(Textures[_armed][(int) _currentEquippedState], Position, CurrentFrameSource(), Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
-        else batch.Draw(Textures[_unarmed][(int) _currentUnequippedState], Position, CurrentFrameSource(), Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
+            batch.Draw(Textures[_armed][(int) _currentEquippedState], position, CurrentFrameSource(), Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
+        else batch.Draw(Textures[_unarmed][(int) _currentUnequippedState], position, CurrentFrameSource(), Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
     }
 
     public override void MoveLeft(float elapsed){
         if( _currentUnequippedState == UnequippedState.Total ){
-            if( _isCrouching )
+            if( _isCrouching ){
                 ChangeEquippedState(EquippedState.CrouchingWalk);
-            else ChangeEquippedState(EquippedState.Walking);
-            ChangePosition(-Speed, 0);
+                XSpeed = -CrouchingSpeed;
+            } else {
+                ChangeEquippedState(EquippedState.Walking);
+                XSpeed = -WalkingSpeed;
+            }
         } else {
-            if( _isCrouching )
+            if( _isCrouching ){
                 ChangeUnequippedState(UnequippedState.CrouchingWalk);
-            else ChangeUnequippedState(UnequippedState.Walking);
-            ChangePosition(-Speed, 0);
+                XSpeed = -CrouchingSpeed;
+            } else {
+                ChangeUnequippedState(UnequippedState.Walking);
+                XSpeed = -WalkingSpeed;
+            }
         }
         TextureEffect = SpriteEffects.FlipHorizontally;
         UpdateFrame(elapsed);
@@ -127,15 +134,21 @@ public class Knight : Entity{
 
     public override void MoveRight(float TotalTime){
         if( _currentUnequippedState == UnequippedState.Total ){
-            if( _isCrouching )
+            if( _isCrouching ){
                 ChangeEquippedState(EquippedState.CrouchingWalk);
-            else ChangeEquippedState(EquippedState.Walking);
-            ChangePosition(Speed, 0);
+                XSpeed = CrouchingSpeed;
+            } else {
+                ChangeEquippedState(EquippedState.Walking);
+                XSpeed = WalkingSpeed;
+            }
         } else {
-            if( _isCrouching )
+            if( _isCrouching ){
                 ChangeUnequippedState(UnequippedState.CrouchingWalk);
-            else ChangeUnequippedState(UnequippedState.Walking);
-            ChangePosition(Speed, 0);
+                XSpeed = CrouchingSpeed;
+            } else {
+                ChangeUnequippedState(UnequippedState.Walking);
+                XSpeed = WalkingSpeed;
+            }
         }
         TextureEffect = SpriteEffects.None;
         UpdateFrame(TotalTime);
@@ -159,7 +172,6 @@ public class Knight : Entity{
             }
             UpdateToggleFrame(elapsed);
             if( _currentFrame == _maxFrame -1 ){
-                Speed = CrouchingSpeed;
                 _isCrouching = true;
             }
         }
@@ -239,7 +251,6 @@ public class Knight : Entity{
             return;
         }
         else if( Keyboard.GetState().IsKeyUp( Keys.LeftControl ) ){
-            Speed = WalkingSpeed;
             _isCrouching = false;
         }
 

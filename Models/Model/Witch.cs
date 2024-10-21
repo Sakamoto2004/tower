@@ -60,6 +60,7 @@ public class Witch : Entity{
     }
 
     public void Draw(SpriteBatch batch ){
-        batch.Draw(Textures[(int) CurrentState], Position, CurrentFrameSource(), Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
+        Vector2 position = new Vector2(){X = Position.X, Y = Position.Y};
+        batch.Draw(Textures[(int) CurrentState], position, CurrentFrameSource(), Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
     }
 }

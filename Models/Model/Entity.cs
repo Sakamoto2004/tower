@@ -1,11 +1,13 @@
 #nullable disable
+using Helper;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 namespace Models.Model;
 
 public class Entity{
-    public Vector2 Position{ get; set; }
-    public int Speed{ get; set; }
+    public Rectangle Position{ get; set; }
+    public int XSpeed{ get; set; }
+    public int YSpeed{ get; set; }
     public bool Paused{ get; set; }    
     public float Rotation{ get; set; }
     public float Scale{ get; set; }
@@ -20,8 +22,9 @@ public class Entity{
     protected int _maxFrame { get; set; }
 
     public Entity(){
-        Position = Vector2.Zero;
-        Speed = 0;
+        Position = new Rectangle();
+        XSpeed = 0;
+        YSpeed = 0;
         Paused = true;
         Rotation = 0;
         Scale = 1;
@@ -73,23 +76,59 @@ public class Entity{
     }
 
     /// This will simply add the @param name="x" and @param name="y" to the position of the object
-    public void ChangePosition( int x, int y ){
-        Vector2 position = Position;
+    public void ChangePosition( int x, int y = 0){
+        Rectangle position = Position;
         position.X += x;
         position.Y += y;
         Position = position;
     }
 
     public virtual void MoveLeft(float elapsed){
-        ChangePosition(-Speed, 0);
+        ChangePosition(-Constants.Knight.WalkingSpeed, 0);
         TextureEffect = SpriteEffects.FlipHorizontally;
         UpdateFrame(elapsed);
     }
 
     public virtual void MoveRight(float elapsed){
-        ChangePosition(Speed, 0);
+        ChangePosition(Constants.Knight.WalkingSpeed, 0);
         TextureEffect = SpriteEffects.None;
         UpdateFrame(elapsed);
+    }
+
+    public void HandleCollision( Rectangle entity ){
+        if( Position.X + Position.Width >= entity.X &&
+            Position.X <= entity.X + entity.Width){
+            XSpeed = -XSpeed;
+        }
+        if( 
+    }
+
+    private void printCurrentPosition(){
+        Console.Write(ToString() + "\n=========\n" + $"X: {Position.X}\nY: {Position.Y}\nWidth: {Position.Width}\nHeight: {Position.Height}\n");
+    }
+    public bool CheckCollision(Rectangle entity){
+            if( Position.X + Position.Width >= entity.X && Position.X <= entity.X + entity.Width &&
+                Position.Y + Position.Height >= entity.Y && Position.Y <= entity.Y + entity.Height){
+
+                return true;
+            }
+        return false;
+    }
+
+    public void Moving( MapObjects objects, float elapsed ){
+        YSpeed = PhysicEngine.SpeedCalculator(Constants.Knight.FallingAcceleration, YSpeed, elapsed);
+        ChangePosition( XSpeed, YSpeed );
+        foreach(Entity temp in objects.Entities){
+            if( CheckCollision( temp.Position ) == true ){
+                HandleCollision( temp.Position );
+                ChangePosition( XSpeed, YSpeed );
+                PhysicEngine.ResetTimer();
+                printCurrentPosition();
+                temp.printCurrentPosition();
+            }
+        }
+        Console.WriteLine(YSpeed);
+        XSpeed = 0;
     }
 
 }

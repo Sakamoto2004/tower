@@ -157,7 +157,7 @@ public static class Constants
             "Knight/Shield_idle_KG",
             "Knight/Shield_Bash_KG",
             "Knight/Shield_Up_KG_1",
-            "Knight/Walking_KG_1"
+            "Knight/Walking_KG_2"
         };
 
         private static Rectangle _sourceSize = new Rectangle(){
@@ -167,6 +167,11 @@ public static class Constants
 
         private static int _walkingSpeed = 5;
         private static int _crouchingSpeed = 2;
+        private static float _fallingAcceleration = 0.5f;
+
+        public static float FallingAcceleration{
+            get => _fallingAcceleration;
+        }
 
         public static int WalkingSpeed{
             get => _walkingSpeed;
