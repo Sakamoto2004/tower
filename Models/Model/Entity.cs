@@ -142,7 +142,7 @@ public class Entity{
     }
 
     //This will check X and Y axis for collision, I'll do some optimization for it after some time
-    public void HandleCollision( Rectangle entity ){
+    public virtual void HandleCollision( Rectangle entity ){
         ChangePosition( 0, -YSpeed );
         if( CheckCollision( entity ) == true )
             ChangePosition( -XSpeed, 0 );

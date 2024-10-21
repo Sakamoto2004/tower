@@ -33,6 +33,58 @@ public static class Constants
     }
 
     public static class Knight{
+
+        private static Rectangle _sourceSize = new Rectangle(){
+            Height = 64,
+            Width = 100
+        };
+
+        private static int _walkingSpeed = 5;
+        private static int _crouchingSpeed = 2;
+        private static float _fallingAcceleration = 3f;
+        private static float _jumpTime = 0.2f;
+        private static int _jumpForce = 10;
+
+        public static int JumpForce{
+            get => _jumpForce;
+        }
+
+        public static float JumpTime{
+            get => _jumpTime;
+        }
+
+        public static float FallingAcceleration{
+            get => _fallingAcceleration;
+        }
+
+        public static int WalkingSpeed{
+            get => _walkingSpeed;
+        }
+
+        public static int CrouchingSpeed{
+            get => _crouchingSpeed;
+        }
+
+        public static int[] UnequippedTextureFrames{
+            get => _unequippedTextureFrames;
+        }
+
+        public static int[] EquippedTextureFrames{
+            get => _equippedTextureFrames;
+        }
+
+        public static string[] UnequippedTextureName{
+            get => _unequippedTextureName;
+        }
+
+        public static string[] EquippedTextureName{
+            get => _equippedTextureName;
+        }
+
+        public static Rectangle SourceSize{
+            get => _sourceSize;
+        }
+
         public enum UnequippedState{
             CrouchingIdling,
             Crouching,
@@ -159,48 +211,6 @@ public static class Constants
             "Knight/Shield_Up_KG_1",
             "Knight/Walking_KG_2"
         };
-
-        private static Rectangle _sourceSize = new Rectangle(){
-            Height = 64,
-            Width = 100
-        };
-
-        private static int _walkingSpeed = 5;
-        private static int _crouchingSpeed = 2;
-        private static float _fallingAcceleration = 3f;
-
-        public static float FallingAcceleration{
-            get => _fallingAcceleration;
-        }
-
-        public static int WalkingSpeed{
-            get => _walkingSpeed;
-        }
-
-        public static int CrouchingSpeed{
-            get => _crouchingSpeed;
-        }
-
-        public static int[] UnequippedTextureFrames{
-            get => _unequippedTextureFrames;
-        }
-
-        public static int[] EquippedTextureFrames{
-            get => _equippedTextureFrames;
-        }
-
-        public static string[] UnequippedTextureName{
-            get => _unequippedTextureName;
-        }
-
-        public static string[] EquippedTextureName{
-            get => _equippedTextureName;
-        }
-
-        public static Rectangle SourceSize{
-            get => _sourceSize;
-        }
-
     }
 
 }

@@ -17,13 +17,16 @@ public class Knight : Entity{
     private Constants.Knight.UnequippedState _currentUnequippedState{ get; set; }
     private  Constants.Knight.EquippedState _currentEquippedState{ get; set; }
 
+    private float _jumpTimer;
     private bool _isDrinking;
     private short _health;
     private bool _isHurting;
     private bool _isCrouching;
     private int _armed;
     private int _unarmed;
+
     public Knight() : base(){
+        _jumpTimer = Constants.Knight.JumpTime;
         _totalElapsed = 0;
         Rotation = 0;
         Paused = false;
@@ -220,14 +223,33 @@ public class Knight : Entity{
         UpdateToggleFrame( elapsed );
     }
 
+    //This will check X and Y axis for collision, I'll do some optimization for it after some time
+    public override void HandleCollision( Rectangle entity ){
+        ChangePosition( 0, -YSpeed );
+        if( CheckCollision( entity ) == true )
+            ChangePosition( -XSpeed, 0 );
+        ChangePosition( 0, YSpeed );
+        if( CheckCollision( entity ) == true ){
+            if( YSpeed > 0 ){
+                Console.WriteLine("Current YSpeed: " + YSpeed);
+                SetPosition( Position.X,  entity.Y - Position.Height );
+                PhysicEngine.ResetTimer();
+                _jumpTimer = Constants.Knight.JumpTime;
+            } else {
+                SetPosition( Position.X, entity.Y + entity.Height );
+            }
+            YSpeed = 0;
+        }
+    }
+
     public void Jumping( float elapsed)
     {
-        if (YSpeed == 0)
-        {
+        if( _jumpTimer > 0 ){
+            _jumpTimer -= elapsed;
             if (_currentUnequippedState == UnequippedState.Total)
                 ChangeEquippedState(EquippedState.Jumpping);
             else ChangeUnequippedState(UnequippedState.Jumpping);
-            YSpeed = -20;
+            YSpeed = -Constants.Knight.JumpForce;
         }
     }
 
