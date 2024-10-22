@@ -1,4 +1,11 @@
 # Todo list
+<details> 
+<summary> Bug list </summary>
+
+- [ ] Hitbox not properly allign with the texture
+
+</details>
+
 <details>
 <summary> Knight </summary>
   
@@ -20,7 +27,7 @@
   - [ ] Unarmed
 - [ ] Falling
   - [ ] Armed
-  - [ ] Unarmed
+  - [x] Unarmed
 - [ ] Grabbing
 - [ ] Hurting
   - [ ] Armed
@@ -30,7 +37,7 @@
   - [ ] Unarmed
 - [ ] Jumping
   - [ ] Armed
-  - [ ] Unarmed
+  - [x] Unarmed
 - [ ] Ladder climbing
 - [ ] Landing
   - [ ] Armed
