@@ -17,6 +17,7 @@ public class Knight : Entity{
     private Constants.Knight.UnequippedState _currentUnequippedState{ get; set; }
     private  Constants.Knight.EquippedState _currentEquippedState{ get; set; }
 
+    private float _swapCooldown;
     private float _jumpTimer;
     private bool _isDrinking;
     private short _health;
@@ -70,12 +71,30 @@ public class Knight : Entity{
                     SourceRectangle[armed][state][frame].X = SourceSize.Width * frame;
                     SourceRectangle[armed][state][frame].Height = SourceSize.Height;
                     SourceRectangle[armed][state][frame].Width = SourceSize.Width;
+                    SourceRectangle[armed][state][frame] = CalibrateSource( SourceRectangle[armed][state][frame] );
                 }
             }
         }
         base.LoadSource();
     }
 
+    public Rectangle CalibrateSource( Rectangle origin ){
+        Rectangle result = origin;
+        int offset = Constants.Knight.SourceTextureOffset;
+        result.X = origin.X + offset;
+        result.Width = origin.Width - offset * 2;
+        return result;
+    }
+
+    public void CalibratePosition(){
+        Rectangle position = Position;
+        int offset = (int) (  (float) Constants.Knight.SourceTextureOffset * Scale );
+        position.X = Position.X + offset;
+        position.Width = Position.Width - offset * 2;
+        printCurrentPosition();
+        Position = position;
+    }
+    
     public void ChangeUnequippedState( UnequippedState state = UnequippedState.Total ){
         if( state == _currentUnequippedState )
             return;
@@ -94,6 +113,48 @@ public class Knight : Entity{
         _maxFrame = EquippedTextureFrames[(int) state];
         _timePerFrame = _frameCycle / _maxFrame;
         _currentFrame = 0;
+    }
+
+    public void ChangeState( string state ){
+        EquippedState tempE = EquippedState.Total;
+        string[] temp = Enum.GetNames( typeof(EquippedState) );
+        for( int index = 0; index < (int) EquippedState.Total; ++index ){
+            if( temp[index].Equals( state ) ){
+                tempE = (EquippedState) index;
+                break;
+            }
+        }   
+        //If the state is Total (Which mean the knight is in different state), we'll set the other state and return
+        if( _currentUnequippedState == UnequippedState.Total && tempE != EquippedState.Total ){
+            ChangeEquippedState( tempE );
+            return;
+        }
+        UnequippedState tempU = UnequippedState.Total;
+        temp = Enum.GetNames( typeof( UnequippedState ) );
+        for( int index = 0; index < (int) UnequippedState.Total; ++index ){
+            if( temp[index].Equals( state ) ){
+                tempU = (UnequippedState) index;
+                break;
+            }
+        }
+        if( tempU == UnequippedState.Total )
+            return;
+        ChangeUnequippedState( tempU );
+    }
+
+    public void SwapState( float elapsed ){
+        if( _swapCooldown > 0 ){
+            _swapCooldown -= elapsed;
+            return;
+        }
+        _swapCooldown = Constants.Knight.SwapCooldown;
+        if( _currentUnequippedState == UnequippedState.Total ){
+            _currentUnequippedState = UnequippedState.Idling;
+            _currentEquippedState = EquippedState.Total;
+            return;
+        }
+        _currentEquippedState = EquippedState.Idling;
+        _currentUnequippedState = UnequippedState.Total;
     }
 
     public override Rectangle CurrentFrameSource(){
@@ -116,18 +177,18 @@ public class Knight : Entity{
     public override void MoveLeft(float elapsed){
         if( _currentUnequippedState == UnequippedState.Total ){
             if( _isCrouching ){
-                ChangeEquippedState(EquippedState.CrouchingWalk);
+                ChangeState("CrouchingWalk");
                 XSpeed = -CrouchingSpeed;
             } else {
-                ChangeEquippedState(EquippedState.Walking);
+                ChangeState("Walking");
                 XSpeed = -WalkingSpeed;
             }
         } else {
             if( _isCrouching ){
-                ChangeUnequippedState(UnequippedState.CrouchingWalk);
+                ChangeState("CrouchingWalk");
                 XSpeed = -CrouchingSpeed;
             } else {
-                ChangeUnequippedState(UnequippedState.Walking);
+                ChangeState("Walking");
                 XSpeed = -WalkingSpeed;
             }
         }
@@ -138,18 +199,18 @@ public class Knight : Entity{
     public override void MoveRight(float TotalTime){
         if( _currentUnequippedState == UnequippedState.Total ){
             if( _isCrouching ){
-                ChangeEquippedState(EquippedState.CrouchingWalk);
+                ChangeState("CrouchingWalk");
                 XSpeed = CrouchingSpeed;
             } else {
-                ChangeEquippedState(EquippedState.Walking);
+                ChangeState("Walking");
                 XSpeed = WalkingSpeed;
             }
         } else {
             if( _isCrouching ){
-                ChangeUnequippedState(UnequippedState.CrouchingWalk);
+                ChangeState("CrouchingWalk");
                 XSpeed = CrouchingSpeed;
             } else {
-                ChangeUnequippedState(UnequippedState.Walking);
+                ChangeState("Walking");
                 XSpeed = WalkingSpeed;
             }
         }
@@ -157,22 +218,32 @@ public class Knight : Entity{
         UpdateFrame(TotalTime);
     }
 
-    public void Idling(float elapsed){
-        if( _currentUnequippedState == UnequippedState.Total ){
-            ChangeEquippedState(EquippedState.Idling);
-        } else {
-            ChangeUnequippedState(UnequippedState.Idling);
+    public override void Moving( MapObjects objects, float elapsed ){
+        YSpeed = PhysicEngine.SpeedCalculator(Constants.Knight.FallingAcceleration, YSpeed, elapsed);
+        ChangePosition( XSpeed, YSpeed );
+
+        if( YSpeed < 0 ){
+            ChangeState("Jumpping");
+        } else if ( YSpeed > 1 ){
+            ChangeState("Falling");
         }
+
+        for( int i = 0; i < objects.Entities.Count; ++i ){
+            Entity temp = objects.Entities[i];
+            if( temp.CheckCollision( temp.Position ) )
+                HandleCollision(temp.Position);
+        }
+        XSpeed = 0;
+    }
+
+    public void Idling(float elapsed){
+        ChangeState("Idling");
         UpdateFrame(elapsed);
     }
 
     public void Crouching(float elapsed){
         if( _isCrouching == false ){
-            if( _currentUnequippedState == UnequippedState.Total ){
-                ChangeEquippedState(EquippedState.Crouching);
-            } else {
-                ChangeUnequippedState(UnequippedState.Crouching);
-            }
+            ChangeState("Crouching");
             UpdateToggleFrame(elapsed);
             if( _currentFrame == _maxFrame -1 ){
                 _isCrouching = true;
@@ -187,11 +258,7 @@ public class Knight : Entity{
             UpdateFrame(elapsed);
             return;
         }
-        if( _currentUnequippedState == UnequippedState.Total ){
-            ChangeEquippedState(EquippedState.Hurting);
-        } else {
-            ChangeUnequippedState(UnequippedState.Hurting);
-        }
+        ChangeState("Hurting");
         _isHurting = true;
         --_health;
     }
@@ -205,7 +272,7 @@ public class Knight : Entity{
             UpdateFrame(elapsed);
             return;
          }
-         ChangeUnequippedState(UnequippedState.Drinking);
+         ChangeState("Drinking");
          _timePerFrame = (float) 1 / _maxFrame;
          _isDrinking = true;
     }
@@ -217,9 +284,7 @@ public class Knight : Entity{
     }
 
     public void Dying( float elapsed ){
-        if( _currentUnequippedState == UnequippedState.Total )
-            ChangeEquippedState( EquippedState.Dying );
-        else ChangeUnequippedState( UnequippedState.Dying );
+        ChangeState( "Dying" );
         UpdateToggleFrame( elapsed );
     }
 
@@ -231,7 +296,6 @@ public class Knight : Entity{
         ChangePosition( 0, YSpeed );
         if( CheckCollision( entity ) == true ){
             if( YSpeed > 0 ){
-                Console.WriteLine("Current YSpeed: " + YSpeed);
                 SetPosition( Position.X,  entity.Y - Position.Height );
                 PhysicEngine.ResetTimer();
                 _jumpTimer = Constants.Knight.JumpTime;
@@ -244,11 +308,9 @@ public class Knight : Entity{
 
     public void Jumping( float elapsed)
     {
+        
+        _jumpTimer -= elapsed;
         if( _jumpTimer > 0 ){
-            _jumpTimer -= elapsed;
-            if (_currentUnequippedState == UnequippedState.Total)
-                ChangeEquippedState(EquippedState.Jumpping);
-            else ChangeUnequippedState(UnequippedState.Jumpping);
             YSpeed = -Constants.Knight.JumpForce;
         }
     }
@@ -277,17 +339,27 @@ public class Knight : Entity{
             YSpeed = 5;
         if( Keyboard.GetState().IsKeyDown(Keys.Up) )
             YSpeed = -5;
-        else if( Keyboard.GetState().IsKeyDown(Keys.Space) )
+
+        if( Keyboard.GetState().IsKeyDown(Keys.Space) )
             Jumping( elapsed );
-        else if( Keyboard.GetState().IsKeyDown(Keys.A) )
+        if(  Keyboard.GetState().IsKeyUp(Keys.Space) && _jumpTimer != JumpTime )
+            _jumpTimer = 0;
+        if( Keyboard.GetState().IsKeyDown(Keys.A) )
             ChangeEquippedState(EquippedState.Crouching);
-        else if( Keyboard.GetState().IsKeyDown(Keys.E) )
+        if( Keyboard.GetState().IsKeyDown(Keys.E) )
             Drinking( elapsed );
-        else if( Keyboard.GetState().IsKeyDown(Keys.K) ){
+        if( Keyboard.GetState().IsKeyDown(Keys.K) ){
             Hurting( elapsed );
             return;
         }
-        else if( Keyboard.GetState().IsKeyUp( Keys.LeftControl ) ){
+        if( Keyboard.GetState().IsKeyDown( Keys.Q ) ){
+            SwapState( elapsed );
+            Idling(elapsed);
+        } else if(  Keyboard.GetState().IsKeyUp( Keys.Q ) && _swapCooldown > 0 ){
+            _swapCooldown = Constants.Knight.SwapCooldown;
+        }
+
+        if( Keyboard.GetState().IsKeyUp( Keys.LeftControl ) ){
             _isCrouching = false;
         }
 

@@ -46,13 +46,11 @@ public class Engine : Game
 //            throw new Exception("Unable to initialize source rectangle");
 //        if( _blueWitch.Textures == null )
 //            throw new Exception("Texture is null");
-
         _knight.Load(Content);
         if(_knight.SourceRectangle == null)
             throw new Exception("Unable to initialize source rectangle");
         if( _knight.Textures == null )
             throw new Exception("Texture is null");
-
         _viewport = _graphics.GraphicsDevice.Viewport;
 //        _blueWitch.Position = new Vector2(_viewport.Width / 2, _viewport.Height /2 );
         _knight.Position = new Rectangle(){
@@ -61,6 +59,9 @@ public class Engine : Game
             Height = Constants.Knight.SourceSize.Height,
             Width = Constants.Knight.SourceSize.Width
         };
+
+        _knight.CalibratePosition();
+
         _map.Entities[0].Position = new Rectangle(){
             Y = _viewport.Height * 3 / 4,
             X = 0,
@@ -85,6 +86,10 @@ public class Engine : Game
             Width = 30,
             Height = _viewport.Height
         }; 
+
+        Texture2D defaultTexture = new Texture2D(GraphicsDevice, 1, 1);
+        defaultTexture.SetData(new Color[] { Color.White });
+        _map.Load( defaultTexture );
         // TODO: use this.Content to load your game content here
     }
 
@@ -102,19 +107,16 @@ public class Engine : Game
     protected override void Draw(GameTime gameTime)
     {
         Texture2D _texture;
-
-        _texture = new Texture2D(GraphicsDevice, 1, 1);
-        _texture.SetData(new Color[] { Color.White });
         GraphicsDevice.Clear(Color.Black);
         // TODO: Add your drawing code here
+        _texture = new Texture2D(GraphicsDevice, 1, 1);
+        _texture.SetData(new Color[] { Color.White });
         _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
-        foreach(Entity entity in _map.Entities)
-        {
-            _spriteBatch.Draw(_texture, entity.Position, Color.White);
-        }
-        _knight.Draw(_spriteBatch);
+
+        _map.Draw( _spriteBatch );
         _spriteBatch.Draw(_texture, _knight.Position, Color.White);
-        
+        _knight.Draw(_spriteBatch);
+
         _spriteBatch.End();
         base.Draw(gameTime);
     }

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Models.Model;
 
 public class Entity{
-
+    public Texture2D DefaultTexture{ get; set; }
     public CollisionChecker CollisionChecker{ get; set; }
     public Rectangle Position{ get; set; }
     public int XSpeed{ get; set; }
@@ -24,6 +24,7 @@ public class Entity{
     protected int _maxFrame { get; set; }
 
     public Entity(){
+        DefaultTexture = null;
         Position = new Rectangle();
         XSpeed = 0;
         YSpeed = 0;
@@ -163,7 +164,7 @@ public class Entity{
         Console.Write(ToString() + "\n=========\n" + $"X: {Position.X}\nY: {Position.Y}\nWidth: {Position.Width}\nHeight: {Position.Height}\n");
     }
 
-    public void Moving( MapObjects objects, float elapsed ){
+    public virtual void Moving( MapObjects objects, float elapsed ){
         YSpeed = PhysicEngine.SpeedCalculator(Constants.Knight.FallingAcceleration, YSpeed, elapsed);
         ChangePosition( XSpeed, YSpeed );
         for( int i = 0; i < objects.Entities.Count; ++i ){

@@ -44,7 +44,16 @@ public static class Constants
         private static float _fallingAcceleration = 3f;
         private static float _jumpTime = 0.2f;
         private static int _jumpForce = 10;
+        private static int _sourceTextureOffset = 31;
+        private static float _swapCooldown = 1f;
 
+        public static float SwapCooldown{
+            get => _swapCooldown;
+        }
+
+        public static int SourceTextureOffset{
+            get => _sourceTextureOffset;
+        }
         public static int JumpForce{
             get => _jumpForce;
         }

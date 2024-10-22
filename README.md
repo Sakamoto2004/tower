@@ -11,33 +11,17 @@
   
 - [x] Render
 - [x] Walking
-  - [ ] Armed
-  - [x] Unarmed
 - [x] Crouching
-  - [ ] Armed
-  - [x] Unarmed
-- [ ] Crouched walking
-  - [ ] Armed
-  - [x] Unarmed
+- [x] Crouched walking
 - [ ] Attack
 - [ ] Dashing
 - [x] Drinking
 - [x] Dying
-  - [ ] Armed
-  - [ ] Unarmed
-- [ ] Falling
-  - [ ] Armed
-  - [x] Unarmed
+- [x] Falling
 - [ ] Grabbing
-- [ ] Hurting
-  - [ ] Armed
-  - [x] Unarmed
-- [ ] Idling
-  - [ ] Armed
-  - [ ] Unarmed
-- [ ] Jumping
-  - [ ] Armed
-  - [x] Unarmed
+- [x] Hurting
+- [x] Idling
+- [x] Jumping
 - [ ] Ladder climbing
 - [ ] Landing
   - [ ] Armed
@@ -49,8 +33,6 @@
 - [ ] Shield bashing
 - [ ] Shielding up
 - [ ] Talking
-- [ ] Walking
-  - [ ] Armed
-  - [x] Unarmed
+- [x] Walking
 
 </details>
