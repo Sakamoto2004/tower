@@ -81,18 +81,18 @@ public class Knight : Entity{
     public Rectangle CalibrateSource( Rectangle origin ){
         Rectangle result = origin;
         int offset = Constants.Knight.SourceTextureOffset;
-        result.X = origin.X + offset;
-        result.Width = origin.Width - offset * 2;
+//        result.X = origin.X + offset;
+//        result.Width = origin.Width - offset * 2;
         return result;
     }
 
-    public void CalibratePosition(){
+    public Rectangle CalibratePosition(){
         Rectangle position = Position;
         int offset = (int) (  (float) Constants.Knight.SourceTextureOffset * Scale );
         position.X = Position.X + offset;
         position.Width = Position.Width - offset * 2;
         printCurrentPosition();
-        Position = position;
+        return position;
     }
     
     public void ChangeUnequippedState( UnequippedState state = UnequippedState.Total ){
@@ -221,13 +221,11 @@ public class Knight : Entity{
     public override void Moving( MapObjects objects, float elapsed ){
         YSpeed = PhysicEngine.SpeedCalculator(Constants.Knight.FallingAcceleration, YSpeed, elapsed);
         ChangePosition( XSpeed, YSpeed );
-
         if( YSpeed < 0 ){
             ChangeState("Jumpping");
         } else if ( YSpeed > 1 ){
             ChangeState("Falling");
         }
-
         for( int i = 0; i < objects.Entities.Count; ++i ){
             Entity temp = objects.Entities[i];
             if( temp.CheckCollision( temp.Position ) )
@@ -315,6 +313,21 @@ public class Knight : Entity{
         }
     }
 
+    public override bool CheckCollision( Rectangle entity ){
+        bool collided = false;
+        //This collision check will check the left side of the entity
+        Rectangle position = CalibratePosition();
+        if (position.X + position.Width > entity.X &&
+            position.X < entity.X + entity.Width && 
+            position.Y + position.Height > entity.Y &&
+            position.Y < entity.Y + entity.Height
+            )
+        {
+            collided = true;
+        } 
+        return collided;
+    }
+
     public void Control(float elapsed){
         if( IsDeath() == true ){
             Dying( elapsed );
@@ -328,12 +341,15 @@ public class Knight : Entity{
             Hurting( elapsed );
             return;
         }
+        if( Keyboard.GetState().IsKeyDown(Keys.LeftControl) ){
+            Crouching(elapsed);
+            if( _isCrouching == false )
+                return;
+        } 
         if( Keyboard.GetState().IsKeyDown(Keys.Left) )
             MoveLeft(elapsed);
         if( Keyboard.GetState().IsKeyDown(Keys.Right) )
             MoveRight(elapsed);
-        if( Keyboard.GetState().IsKeyDown(Keys.LeftControl) )
-            Crouching(elapsed);
 
         if( Keyboard.GetState().IsKeyDown(Keys.Down) )
             YSpeed = 5;
@@ -358,11 +374,9 @@ public class Knight : Entity{
         } else if(  Keyboard.GetState().IsKeyUp( Keys.Q ) && _swapCooldown > 0 ){
             _swapCooldown = Constants.Knight.SwapCooldown;
         }
-
         if( Keyboard.GetState().IsKeyUp( Keys.LeftControl ) ){
             _isCrouching = false;
         }
-
         if( Keyboard.GetState().GetPressedKeyCount() == 0 )
             Idling(elapsed);
     }

@@ -60,8 +60,6 @@ public class Engine : Game
             Width = Constants.Knight.SourceSize.Width
         };
 
-        _knight.CalibratePosition();
-
         _map.Entities[0].Position = new Rectangle(){
             Y = _viewport.Height * 3 / 4,
             X = 0,
@@ -114,7 +112,7 @@ public class Engine : Game
         _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
         _map.Draw( _spriteBatch );
-        _spriteBatch.Draw(_texture, _knight.Position, Color.White);
+        _spriteBatch.Draw(_texture, _knight.CalibratePosition(), Color.White);
         _knight.Draw(_spriteBatch);
 
         _spriteBatch.End();

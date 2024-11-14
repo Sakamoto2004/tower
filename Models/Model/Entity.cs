@@ -121,7 +121,7 @@ public class Entity{
 //            if( YSpeed < 0 ) ChangePosition( 0, -YSpeed );
 //        }
 //    }
-    public bool CheckCollision( Rectangle entity ){
+    public virtual bool CheckCollision( Rectangle entity ){
         bool collided = false;
         //This collision check will check the left side of the entity
         if (Position.X + Position.Width > entity.X &&
