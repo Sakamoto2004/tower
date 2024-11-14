@@ -89,8 +89,18 @@ public class Knight : Entity{
     public Rectangle CalibratePosition(){
         Rectangle position = Position;
         int offset = (int) (  (float) Constants.Knight.SourceTextureOffset * Scale );
-        position.X = Position.X + offset;
-        position.Width = Position.Width - offset * 2;
+        if( _currentUnequippedState != UnequippedState.Total ){
+            position.X = Position.X + offset;
+            position.Width = Position.Width - offset * 2;
+        } else if( _currentEquippedState != EquippedState.Total ){
+            position.X = Position.X + offset - 3;
+            position.Width = Position.Width - (offset - 3) * 2;
+        } 
+        if( _isCrouching ){
+            offset = 20;
+            position.Y = Position.Y + offset;
+            position.Height = Position.Height - offset;
+        }
         printCurrentPosition();
         return position;
     }
