@@ -150,7 +150,6 @@ public class Entity{
         ChangePosition( 0, YSpeed );
         if( CheckCollision( entity ) == true ){
             if( YSpeed > 0 ){
-                Console.WriteLine("Current YSpeed: " + YSpeed);
                 SetPosition( Position.X,  entity.Y - Position.Height );
                 PhysicEngine.ResetTimer();
             } else {
@@ -161,7 +160,7 @@ public class Entity{
     }
 
     public void printCurrentPosition(){
-        Console.Write(ToString() + "\n=========\n" + $"X: {Position.X}\nY: {Position.Y}\nWidth: {Position.Width}\nHeight: {Position.Height}\n");
+        //Console.Write(ToString() + "\n=========\n" + $"X: {Position.X}\nY: {Position.Y}\nWidth: {Position.Width}\nHeight: {Position.Height}\n");
     }
 
     public virtual void Moving( MapObjects objects, float elapsed ){

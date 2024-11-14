@@ -25,6 +25,7 @@ public class Knight : Entity{
     private bool _isCrouching;
     private int _armed;
     private int _unarmed;
+    private int _isAttacking;
 
     public Knight() : base(){
         _jumpTimer = Constants.Knight.JumpTime;
@@ -40,6 +41,7 @@ public class Knight : Entity{
         _unarmed = 0;
         _health = 5;
         _isHurting = false;
+        _isAttacking = 0;
     }
 
     public void Load(ContentManager content){
@@ -173,8 +175,9 @@ public class Knight : Entity{
     }
 
     public override Rectangle CurrentFrameSource(){
+        Console.WriteLine( _currentEquippedState + ", " + _currentFrame );
         if( _currentUnequippedState == UnequippedState.Total )
-            return SourceRectangle[_armed][(int) _currentUnequippedState][_currentFrame];
+            return SourceRectangle[_armed][(int) _currentEquippedState][_currentFrame];
         else return SourceRectangle[_unarmed][(int) _currentUnequippedState][_currentFrame];
     }
 
@@ -333,6 +336,49 @@ public class Knight : Entity{
         }
     }
 
+    public void Attacking( float elapsed, bool isContinue ){
+        if( _currentUnequippedState != UnequippedState.Total ){
+            return;
+        }
+        if( _isAttacking == 0 ){
+            ChangeState("Attack1");
+            _timePerFrame = (float) 0.65 / _maxFrame;
+            _isAttacking = 1;
+            return;
+        }
+        if( _currentFrame < _maxFrame - 1 || _totalElapsed + elapsed < _timePerFrame ){
+            if( _isAttacking == 3 && _currentFrame == 5 )
+                XSpeed = 15;
+            if( _isAttacking == 4 )
+                XSpeed = 2;
+            if( TextureEffect == SpriteEffects.FlipHorizontally )
+                XSpeed = -XSpeed;
+            UpdateFrame(elapsed);
+            return;
+        }
+        if( isContinue ){
+            if( _isAttacking == 4 )
+                _isAttacking = 1;
+            else _isAttacking += 1;
+
+            ChangeState("Attack" + _isAttacking );
+            switch( _isAttacking ){
+                case 2: 
+                    _timePerFrame = (float) 0.65 / _maxFrame;
+                    break;
+                case 3: 
+                    _timePerFrame = (float) 0.75 / _maxFrame;
+                    break;
+                case 4:
+                    _timePerFrame = (float) 0.65 / _maxFrame;
+                    break;
+            }
+            Console.WriteLine("Attack" + _isAttacking );
+        } else {
+            _isAttacking = 0;
+        }
+    }
+
     public override bool CheckCollision( Rectangle entity ){
         bool collided = false;
         //This collision check will check the left side of the entity
@@ -349,6 +395,10 @@ public class Knight : Entity{
     }
 
     public void Control(float elapsed){
+        if( _isAttacking > 0 ){
+            Attacking( elapsed, Keyboard.GetState().IsKeyDown(Keys.F) );
+            return;
+        }
         if( IsDeath() == true ){
             Dying( elapsed );
             return;
@@ -370,12 +420,10 @@ public class Knight : Entity{
             MoveLeft(elapsed);
         if( Keyboard.GetState().IsKeyDown(Keys.Right) )
             MoveRight(elapsed);
-
         if( Keyboard.GetState().IsKeyDown(Keys.Down) )
             YSpeed = 5;
         if( Keyboard.GetState().IsKeyDown(Keys.Up) )
             YSpeed = -5;
-
         if( Keyboard.GetState().IsKeyDown(Keys.Space) )
             Jumping( elapsed );
         if(  Keyboard.GetState().IsKeyUp(Keys.Space) && _jumpTimer != JumpTime )
@@ -403,6 +451,9 @@ public class Knight : Entity{
                 }
                 _isCrouching = false;
             }
+        }
+        if( Keyboard.GetState().IsKeyDown( Keys.F ) ){
+            Attacking( elapsed, false );
         }
         if( Keyboard.GetState().GetPressedKeyCount() == 0 )
             Idling(elapsed);

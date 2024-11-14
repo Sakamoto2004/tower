@@ -3,23 +3,23 @@
 <summary> Bug list </summary>
 
 - [ ] Hitbox not properly allign with the texture
-    - [ ] Render
+    - [x] Render
     - [x] Walking
       - [ ] Armed
       - [x] Unarmed
-    - [ ] Crouching
-      - [ ] Armed
-      - [ ] Unarmed
-    - [ ] Crouched walking
-      - [ ] Armed
-      - [ ] Unarmed
+    - [x] Crouching
+      - [x] Armed
+      - [x] Unarmed
+    - [x] Crouched walking
+      - [x] Armed
+      - [x] Unarmed
     - [ ] Attack
     - [ ] Dashing
     - [x] Drinking
     - [ ] Dying
       - [ ] Armed
       - [ ] Unarmed
-    - [ ] Falling
+    - [x] Falling
       - [ ] Armed
       - [x] Unarmed
     - [ ] Grabbing
@@ -56,7 +56,7 @@
 - [x] Walking
 - [x] Crouching
 - [x] Crouched walking
-- [ ] Attack
+- [x] Attack
 - [ ] Dashing
 - [x] Drinking
 - [x] Dying
