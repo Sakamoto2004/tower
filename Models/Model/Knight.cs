@@ -100,6 +100,11 @@ public class Knight : Entity{
             offset = 20;
             position.Y = Position.Y + offset;
             position.Height = Position.Height - offset;
+            if (TextureEffect != SpriteEffects.FlipHorizontally ){
+                position.X += 5;
+            } else if (TextureEffect == SpriteEffects.FlipHorizontally ){
+                position.X -= 5;
+            }
         }
         printCurrentPosition();
         return position;
@@ -255,6 +260,11 @@ public class Knight : Entity{
             UpdateToggleFrame(elapsed);
             if( _currentFrame == _maxFrame -1 ){
                 _isCrouching = true;
+                if( TextureEffect != SpriteEffects.FlipHorizontally ){
+                    ChangePosition( -5, 0);
+                } else if( TextureEffect == SpriteEffects.FlipHorizontally ){
+                    ChangePosition( 5, 0);
+                }
             }
         }
     }
@@ -385,7 +395,14 @@ public class Knight : Entity{
             _swapCooldown = Constants.Knight.SwapCooldown;
         }
         if( Keyboard.GetState().IsKeyUp( Keys.LeftControl ) ){
-            _isCrouching = false;
+            if( _isCrouching == true ){
+                if( TextureEffect != SpriteEffects.FlipHorizontally ){
+                    ChangePosition( 5, 0);
+                } else if( TextureEffect == SpriteEffects.FlipHorizontally ){
+                    ChangePosition( -5, 0);
+                }
+                _isCrouching = false;
+            }
         }
         if( Keyboard.GetState().GetPressedKeyCount() == 0 )
             Idling(elapsed);
