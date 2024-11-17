@@ -19,6 +19,7 @@ public class Knight : Entity{
 
     private float _swapCooldown;
     private float _jumpTimer;
+    private float _dashCoolDown;
     private bool _isDrinking;
     private short _health;
     private bool _isHurting;
@@ -26,6 +27,7 @@ public class Knight : Entity{
     private int _armed;
     private int _unarmed;
     private int _isAttacking;
+    private bool _isDashing;
 
     public Knight() : base(){
         _jumpTimer = Constants.Knight.JumpTime;
@@ -42,6 +44,8 @@ public class Knight : Entity{
         _health = 5;
         _isHurting = false;
         _isAttacking = 0;
+        _isDashing = false;
+        _dashCoolDown = 0.5f;
     }
 
     public void Load(ContentManager content){
@@ -175,7 +179,7 @@ public class Knight : Entity{
     }
 
     public override Rectangle CurrentFrameSource(){
-        Console.WriteLine( _currentEquippedState + ", " + _currentFrame );
+        //Console.WriteLine( _currentEquippedState + ", " + _currentFrame );
         if( _currentUnequippedState == UnequippedState.Total )
             return SourceRectangle[_armed][(int) _currentEquippedState][_currentFrame];
         else return SourceRectangle[_unarmed][(int) _currentUnequippedState][_currentFrame];
@@ -329,7 +333,6 @@ public class Knight : Entity{
 
     public void Jumping( float elapsed)
     {
-        
         _jumpTimer -= elapsed;
         if( _jumpTimer > 0 ){
             YSpeed = -Constants.Knight.JumpForce;
@@ -373,9 +376,41 @@ public class Knight : Entity{
                     _timePerFrame = (float) 0.65 / _maxFrame;
                     break;
             }
-            Console.WriteLine("Attack" + _isAttacking );
+            //Console.WriteLine("Attack" + _isAttacking );
         } else {
             _isAttacking = 0;
+        }
+    }
+
+    public void Dashing( float elapsed ){
+        //ignore dashing input if not equipping any weapons
+        if ( _currentEquippedState == EquippedState.Total )
+            return;
+        if( _dashCoolDown > 0 ){
+            return;
+        }
+        if( _isDashing == false ){
+            ChangeState( "Dashing" );
+            _isDashing = true;
+            _timePerFrame = 0.1f;
+            return;
+        }
+        if( _currentFrame < _maxFrame - 1 || _totalElapsed + elapsed < _timePerFrame ){
+            if( _currentFrame == 2 ){
+                XSpeed = 5;
+            }
+            else if( _currentFrame == 3 ){
+                XSpeed = 20;
+                _timePerFrame = 0.15f;
+            }
+            if( TextureEffect == SpriteEffects.FlipHorizontally )
+                XSpeed = -XSpeed;
+            UpdateFrame(elapsed);
+            return;
+        } else {
+            _isDashing = false;
+            _dashCoolDown = 0.5f;
+            ChangeState("Idling");
         }
     }
 
@@ -395,13 +430,20 @@ public class Knight : Entity{
     }
 
     public void Control(float elapsed){
+        KeyboardState temp = Keyboard.GetState();
         if( _isAttacking > 0 ){
-            Attacking( elapsed, Keyboard.GetState().IsKeyDown(Keys.F) );
+            Attacking( elapsed, temp.IsKeyDown(Keys.F) );
             return;
         }
         if( IsDeath() == true ){
             Dying( elapsed );
             return;
+        }
+        if( _isDashing == true ){
+            Dashing( elapsed );
+            return;
+        } else if( _dashCoolDown > 0 ){
+            _dashCoolDown -= elapsed;
         }
         if( _isDrinking == true ){
             Drinking( elapsed );
@@ -411,38 +453,38 @@ public class Knight : Entity{
             Hurting( elapsed );
             return;
         }
-        if( Keyboard.GetState().IsKeyDown(Keys.LeftControl) ){
+        if( temp.IsKeyDown(Keys.LeftControl) ){
             Crouching(elapsed);
             if( _isCrouching == false )
                 return;
         } 
-        if( Keyboard.GetState().IsKeyDown(Keys.Left) )
+        if( temp.IsKeyDown(Keys.Left) )
             MoveLeft(elapsed);
-        if( Keyboard.GetState().IsKeyDown(Keys.Right) )
+        if( temp.IsKeyDown(Keys.Right) )
             MoveRight(elapsed);
-        if( Keyboard.GetState().IsKeyDown(Keys.Down) )
+        if( temp.IsKeyDown(Keys.Down) )
             YSpeed = 5;
-        if( Keyboard.GetState().IsKeyDown(Keys.Up) )
+        if( temp.IsKeyDown(Keys.Up) )
             YSpeed = -5;
-        if( Keyboard.GetState().IsKeyDown(Keys.Space) )
+        if( temp.IsKeyDown(Keys.Space) )
             Jumping( elapsed );
-        if(  Keyboard.GetState().IsKeyUp(Keys.Space) && _jumpTimer != JumpTime )
+        if(  temp.IsKeyUp(Keys.Space) && _jumpTimer != JumpTime )
             _jumpTimer = 0;
-        if( Keyboard.GetState().IsKeyDown(Keys.A) )
+        if( temp.IsKeyDown(Keys.A) )
             ChangeEquippedState(EquippedState.Crouching);
-        if( Keyboard.GetState().IsKeyDown(Keys.E) )
+        if( temp.IsKeyDown(Keys.E) )
             Drinking( elapsed );
-        if( Keyboard.GetState().IsKeyDown(Keys.K) ){
+        if( temp.IsKeyDown(Keys.K) ){
             Hurting( elapsed );
             return;
         }
-        if( Keyboard.GetState().IsKeyDown( Keys.Q ) ){
+        if( temp.IsKeyDown( Keys.Q ) ){
             SwapState( elapsed );
             Idling(elapsed);
-        } else if(  Keyboard.GetState().IsKeyUp( Keys.Q ) && _swapCooldown > 0 ){
+        } else if(  temp.IsKeyUp( Keys.Q ) && _swapCooldown > 0 ){
             _swapCooldown = Constants.Knight.SwapCooldown;
         }
-        if( Keyboard.GetState().IsKeyUp( Keys.LeftControl ) ){
+        if( temp.IsKeyUp( Keys.LeftControl ) ){
             if( _isCrouching == true ){
                 if( TextureEffect != SpriteEffects.FlipHorizontally ){
                     ChangePosition( 5, 0);
@@ -452,10 +494,13 @@ public class Knight : Entity{
                 _isCrouching = false;
             }
         }
-        if( Keyboard.GetState().IsKeyDown( Keys.F ) ){
+        if( temp.IsKeyDown( Keys.LeftShift ) ){
+            Dashing( elapsed );
+        }
+        if( temp.IsKeyDown( Keys.F ) ){
             Attacking( elapsed, false );
         }
-        if( Keyboard.GetState().GetPressedKeyCount() == 0 )
+        if( temp.GetPressedKeyCount() == 0 )
             Idling(elapsed);
     }
 }

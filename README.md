@@ -5,7 +5,7 @@
 - [ ] Hitbox not properly allign with the texture
     - [x] Render
     - [x] Walking
-      - [ ] Armed
+      - [x] Armed
       - [x] Unarmed
     - [x] Crouching
       - [x] Armed
@@ -57,7 +57,7 @@
 - [x] Crouching
 - [x] Crouched walking
 - [x] Attack
-- [ ] Dashing
+- [x] Dashing
 - [x] Drinking
 - [x] Dying
 - [x] Falling
