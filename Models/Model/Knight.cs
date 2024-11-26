@@ -35,6 +35,10 @@ public class Knight : Entity{
     private bool _isPoweredUp;
     private int _damageChanged;
     private bool _isLanding;
+    private bool _isPushing;
+    //Have to add this because the model only push if they're moving, which mean we have to have this variable to know
+    //How long has the model pushed
+    private float _pushingTime;
 
     public Knight() : base(){
         _jumpTimer = Constants.Knight.JumpTime;
@@ -55,6 +59,8 @@ public class Knight : Entity{
         _dashCoolDown = 0.5f;
         _isPoweringUp = false;
         _powerUpTime = -20f;
+        _isPushing = false;
+        _pushingTime = 0.0f;
         Damage = 1;
     }
 
@@ -276,10 +282,10 @@ public class Knight : Entity{
         for( int i = 0; i < objects.Entities.Count; ++i ){
             Entity temp = objects.Entities[i];
             if( temp.CheckCollision( temp.Position ) )
-                HandleCollision(temp.Position);
+                HandleCollision( temp.Position, elapsed );
         }
         XSpeed = 0;
-        Console.WriteLine("Falling speed: " + YSpeed );
+        //Console.WriteLine("Falling speed: " + YSpeed );
     }
 
     public void Idling(float elapsed){
@@ -387,11 +393,41 @@ public class Knight : Entity{
          _isLanding = true;
     }
 
+    public void UpdatePushingFrame( float elapsed ){
+        if( Paused )
+            return;
+        _pushingTime += elapsed;
+        //Console.WriteLine(_totalElapsed + " | " + _timePerFrame);
+        ChangeState("Pushing");
+         _timePerFrame = (float) 0.75f / _maxFrame;
+        if(_pushingTime > _timePerFrame){
+            int frameIndex = (int) (_pushingTime / _timePerFrame);
+            if( frameIndex >= _maxFrame ){
+                frameIndex = 0;
+                _pushingTime -= _maxFrame * _timePerFrame;
+            }
+            _currentFrame = frameIndex;
+        }
+
+    }
+    //I have to make it check using flag as moving already changed the texture so I can't make it check using state
+    public void Pushing( float elapsed ){
+         if( _isPushing ){
+            UpdatePushingFrame(elapsed);
+            return;
+         }
+         _isPushing = true;
+    }
+
     //This will check X and Y axis for collision, I'll do some optimization for it after some time
-    public override void HandleCollision( Rectangle entity ){
+    public override void HandleCollision( Rectangle entity, float elapsed = 0.0f ){
+        //We already made change to the position, so this will reset 1 axis for checking collision at the other axis
+        //The will reset the Y axis to check collision to the X axis 
         ChangePosition( 0, -YSpeed );
-        if( CheckCollision( entity ) == true )
+        if( CheckCollision( entity ) == true ){
             ChangePosition( -XSpeed, 0 );
+            Pushing( elapsed );
+        }
         ChangePosition( 0, YSpeed );
         if( CheckCollision( entity ) == true ){
             if( YSpeed > 0 ){
@@ -582,6 +618,10 @@ public class Knight : Entity{
                 }
                 _isCrouching = false;
             }
+        }
+        if( temp.IsKeyUp( Keys.Left ) && temp.IsKeyUp( Keys.Right ) ){
+            _isPushing = false;
+            _pushingTime = 0;
         }
         if( temp.IsKeyDown( Keys.LeftShift ) ){
             Dashing( elapsed );
