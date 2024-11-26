@@ -69,9 +69,9 @@
 - [x] Idling
 - [x] Jumping
 - [ ] Ladder climbing
-- [ ] Landing
-    - [ ] Armed
-    - [ ] Unarmed
+- [x] Landing
+    - [x] Armed
+    - [x] Unarmed
 - [ ] Ledge grab
 - [x] Power up
     - [x] Power up animation

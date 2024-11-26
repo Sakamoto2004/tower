@@ -34,6 +34,7 @@ public class Knight : Entity{
     private float _powerUpTime;
     private bool _isPoweredUp;
     private int _damageChanged;
+    private bool _isLanding;
 
     public Knight() : base(){
         _jumpTimer = Constants.Knight.JumpTime;
@@ -278,6 +279,7 @@ public class Knight : Entity{
                 HandleCollision(temp.Position);
         }
         XSpeed = 0;
+        Console.WriteLine("Falling speed: " + YSpeed );
     }
 
     public void Idling(float elapsed){
@@ -320,7 +322,7 @@ public class Knight : Entity{
                 _isPoweredUp = true;
                 _damageChanged = increase;
                 _powerUpTime = powerUpTime;
-                Console.WriteLine( Damage + ": " + _powerUpTime );
+                //Console.WriteLine( Damage + ": " + _powerUpTime );
             }
             UpdateFrame(elapsed);
             return;
@@ -342,7 +344,7 @@ public class Knight : Entity{
         //The negative will be the cooldown for the next power up
         if( _powerUpTime > -10f ){
             _powerUpTime -= elapsed;
-            Console.WriteLine( Damage + ": " + _powerUpTime );
+            //Console.WriteLine( Damage + ": " + _powerUpTime );
             return;
         }
     }
@@ -372,6 +374,19 @@ public class Knight : Entity{
         UpdateToggleFrame( elapsed );
     }
 
+    public void Landing( float elapsed ){
+         if( _isLanding == true ){
+            if( _currentFrame == _maxFrame - 1 && _totalElapsed + elapsed >= _timePerFrame ){
+                _isLanding = false;
+            }
+            UpdateFrame(elapsed);
+            return;
+         }
+         ChangeState("Landing");
+         _timePerFrame = (float) 0.5f / _maxFrame;
+         _isLanding = true;
+    }
+
     //This will check X and Y axis for collision, I'll do some optimization for it after some time
     public override void HandleCollision( Rectangle entity ){
         ChangePosition( 0, -YSpeed );
@@ -383,6 +398,8 @@ public class Knight : Entity{
                 SetPosition( Position.X,  entity.Y - Position.Height );
                 PhysicEngine.ResetTimer();
                 _jumpTimer = Constants.Knight.JumpTime;
+                if( (_currentEquippedState == EquippedState.Falling || _currentUnequippedState == UnequippedState.Falling) && YSpeed > 16 )
+                    Landing( 0.01f );
             } else {
                 SetPosition( Position.X, entity.Y + entity.Height );
             }
@@ -490,11 +507,6 @@ public class Knight : Entity{
 
     public void Control(float elapsed){
         KeyboardState temp = Keyboard.GetState();
-        if( _isPoweringUp ){
-            PoweringUp( elapsed );
-            return;
-        } 
-        PowerRemain( elapsed );
         if( _isAttacking > 0 ){
             Attacking( elapsed, temp.IsKeyDown(Keys.F) );
             return;
@@ -517,6 +529,15 @@ public class Knight : Entity{
             Hurting( elapsed );
             return;
         }
+        if( _isLanding ){
+            Landing( elapsed );
+            return;
+        }
+        if( _isPoweringUp ){
+            PoweringUp( elapsed );
+            return;
+        } 
+        PowerRemain( elapsed );
         if( temp.IsKeyDown(Keys.LeftControl) ){
             Crouching(elapsed);
             if( _isCrouching == false )
