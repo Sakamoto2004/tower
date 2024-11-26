@@ -1,3 +1,5 @@
+Just a project that I barely has some tome to work
+
 # Todo list
 <details> 
 <summary> Bug list </summary>
