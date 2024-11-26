@@ -5,37 +5,37 @@
 - [ ] Hitbox not properly allign with the texture
     - [x] Render
     - [x] Walking
-      - [x] Armed
-      - [x] Unarmed
+        - [x] Armed
+        - [x] Unarmed
     - [x] Crouching
-      - [x] Armed
-      - [x] Unarmed
+        - [x] Armed
+        - [x] Unarmed
     - [x] Crouched walking
-      - [x] Armed
-      - [x] Unarmed
+        - [x] Armed
+        - [x] Unarmed
     - [ ] Attack
     - [ ] Dashing
     - [x] Drinking
     - [ ] Dying
-      - [ ] Armed
-      - [ ] Unarmed
+        - [ ] Armed
+        - [ ] Unarmed
     - [x] Falling
-      - [ ] Armed
-      - [x] Unarmed
+        - [ ] Armed
+        - [x] Unarmed
     - [ ] Grabbing
     - [ ] Hurting
-      - [ ] Armed
-      - [ ] Unarmed
+        - [ ] Armed
+        - [ ] Unarmed
     - [ ] Idling
-      - [ ] Armed
-      - [x] Unarmed
+        - [ ] Armed
+        - [x] Unarmed
     - [ ] Jumping
-      - [ ] Armed
-      - [x] Unarmed
+        - [ ] Armed
+        - [x] Unarmed
     - [ ] Ladder climbing
     - [ ] Landing
-      - [ ] Armed
-      - [ ] Unarmed
+        - [ ] Armed
+        - [ ] Unarmed
     - [ ] Ledge grab
     - [ ] Power up
     - [ ] Pushing
@@ -44,8 +44,8 @@
     - [ ] Shielding up
     - [ ] Talking
     - [ ] Walking
-      - [ ] Armed
-      - [x] Unarmed
+        - [ ] Armed
+        - [x] Unarmed
 
 </details>
 
@@ -58,9 +58,8 @@
 - [x] Crouched walking
 - [x] Attack
     - [x] Attack animation
-    - [ ] Attack hitbox
-    - [ ] Variable damage changer
-
+    - [x] Attack hitbox
+    - [x] Variable damage changer
 - [x] Dashing
 - [x] Drinking
 - [x] Dying
@@ -71,10 +70,13 @@
 - [x] Jumping
 - [ ] Ladder climbing
 - [ ] Landing
-  - [ ] Armed
-  - [ ] Unarmed
+    - [ ] Armed
+    - [ ] Unarmed
 - [ ] Ledge grab
-- [ ] Power up
+- [x] Power up
+    - [x] Power up animation
+    - [x] Power up cooldown
+    - [x] Power up attribute
 - [ ] Pushing
 - [ ] Shielding
 - [ ] Shield bashing

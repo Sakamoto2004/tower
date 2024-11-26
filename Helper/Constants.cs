@@ -46,6 +46,11 @@ public static class Constants
         private static int _jumpForce = 10;
         private static int _sourceTextureOffset = 31;
         private static float _swapCooldown = 1f;
+        private static float _powerUpTime = 5f;
+
+        public static float PowerUpTime{
+            get => _powerUpTime;
+        }
 
         public static float SwapCooldown{
             get => _swapCooldown;

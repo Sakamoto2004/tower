@@ -14,11 +14,11 @@ public class Knight : Entity{
 
     //This is because the texture pack has 2 state, unequipped and equipped, with many texutre, and in which has many small pictures
     public Rectangle[][][] SourceRectangle{ get; set; }
+    public int Damage{ get; set; }
 
     //I have to split into 2 because there are 2 state with different textures.
     private Constants.Knight.UnequippedState _currentUnequippedState{ get; set; }
     private  Constants.Knight.EquippedState _currentEquippedState{ get; set; }
-
     private float _swapCooldown;
     private float _jumpTimer;
     private float _dashCoolDown;
@@ -30,6 +30,10 @@ public class Knight : Entity{
     private int _unarmed;
     private int _isAttacking;
     private bool _isDashing;
+    private bool _isPoweringUp;
+    private float _powerUpTime;
+    private bool _isPoweredUp;
+    private int _damageChanged;
 
     public Knight() : base(){
         _jumpTimer = Constants.Knight.JumpTime;
@@ -48,6 +52,9 @@ public class Knight : Entity{
         _isAttacking = 0;
         _isDashing = false;
         _dashCoolDown = 0.5f;
+        _isPoweringUp = false;
+        _powerUpTime = -20f;
+        Damage = 1;
     }
 
     public void Load(ContentManager content){
@@ -305,6 +312,41 @@ public class Knight : Entity{
         --_health;
     }
 
+    public void PoweringUp( float elapsed, int increase = 2, float powerUpTime = 5f ){
+         if( _isPoweringUp == true ){
+            if( _currentFrame == _maxFrame - 1 && _totalElapsed + elapsed >= _timePerFrame ){
+                _isPoweringUp = false;
+                Damage += increase;
+                _isPoweredUp = true;
+                _damageChanged = increase;
+                _powerUpTime = powerUpTime;
+                Console.WriteLine( Damage + ": " + _powerUpTime );
+            }
+            UpdateFrame(elapsed);
+            return;
+         }
+         if( _powerUpTime > -10f )
+             return;
+         ChangeState("PoweringUp");
+         _timePerFrame = (float) 1 / _maxFrame;
+         _isPoweringUp = true;
+    }
+
+    public void PowerRemain( float elapsed ){
+        if( _powerUpTime < 0 && _isPoweredUp ){
+            Damage -= _damageChanged;
+            _damageChanged = 0;
+            _isPoweredUp = false;
+        }
+
+        //The negative will be the cooldown for the next power up
+        if( _powerUpTime > -10f ){
+            _powerUpTime -= elapsed;
+            Console.WriteLine( Damage + ": " + _powerUpTime );
+            return;
+        }
+    }
+
     public void Drinking( float elapsed ){
          if( _isDrinking == true ){
             if( _currentFrame == _maxFrame - 1 && _totalElapsed + elapsed >= _timePerFrame ){
@@ -448,6 +490,11 @@ public class Knight : Entity{
 
     public void Control(float elapsed){
         KeyboardState temp = Keyboard.GetState();
+        if( _isPoweringUp ){
+            PoweringUp( elapsed );
+            return;
+        } 
+        PowerRemain( elapsed );
         if( _isAttacking > 0 ){
             Attacking( elapsed, temp.IsKeyDown(Keys.F) );
             return;
@@ -493,6 +540,10 @@ public class Knight : Entity{
             Drinking( elapsed );
         if( temp.IsKeyDown(Keys.K) ){
             Hurting( elapsed );
+            return;
+        }
+        if( temp.IsKeyDown( Keys.G ) ){
+            PoweringUp( elapsed );
             return;
         }
         if( temp.IsKeyDown( Keys.Q ) ){
