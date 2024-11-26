@@ -14,6 +14,8 @@ public class Knight : Entity{
 
     //This is because the texture pack has 2 state, unequipped and equipped, with many texutre, and in which has many small pictures
     public Rectangle[][][] SourceRectangle{ get; set; }
+
+    //I have to split into 2 because there are 2 state with different textures.
     private Constants.Knight.UnequippedState _currentUnequippedState{ get; set; }
     private  Constants.Knight.EquippedState _currentEquippedState{ get; set; }
 
@@ -112,7 +114,22 @@ public class Knight : Entity{
                 position.X -= 5;
             }
         }
-        printCurrentPosition();
+        return position;
+    }
+
+    public Rectangle CalibrateAttackHitbox(){
+        Rectangle position = Position;
+        int offset = (int) (  (float) Constants.Knight.SourceTextureOffset * Scale );
+        if( _currentUnequippedState != UnequippedState.Total ){
+            position.X = Position.X + offset;
+            position.Width = Position.Width - offset * 2 - offset / 3;
+        } else if( _currentEquippedState != EquippedState.Total ){
+            position.X = Position.X + offset - 3;
+            position.Width = Position.Width - (offset - 3) * 2 - offset / 3;
+        } 
+        if( TextureEffect == SpriteEffects.FlipHorizontally )
+            position.X -= position.Width;
+        else position.X += ( position.Width + offset / 3 );
         return position;
     }
     

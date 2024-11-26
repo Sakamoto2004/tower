@@ -113,6 +113,7 @@ public class Engine : Game
 
         _map.Draw( _spriteBatch );
         _spriteBatch.Draw(_texture, _knight.CalibratePosition(), Color.White);
+        _spriteBatch.Draw(_texture, _knight.CalibrateAttackHitbox(), Color.Red);
         _knight.Draw(_spriteBatch);
 
         _spriteBatch.End();
