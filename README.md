@@ -51,12 +51,16 @@
 
 <details>
 <summary> Knight </summary>
-  
+
 - [x] Render
 - [x] Walking
 - [x] Crouching
 - [x] Crouched walking
 - [x] Attack
+    - [x] Attack animation
+    - [ ] Attack hitbox
+    - [ ] Variable damage changer
+
 - [x] Dashing
 - [x] Drinking
 - [x] Dying
