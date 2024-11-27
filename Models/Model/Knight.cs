@@ -274,6 +274,10 @@ public class Knight : Entity{
     }
 
     public override void Moving( MapObjects objects, float elapsed ){
+        if( _currentUnequippedState == UnequippedState.LedgeGrabbing ||
+            _currentUnequippedState == UnequippedState.GrappedIdling ){
+            return;
+        }
         YSpeed = PhysicEngine.SpeedCalculator(Constants.Knight.FallingAcceleration, YSpeed, elapsed);
         ChangePosition( XSpeed, YSpeed );
         if( YSpeed < 0 ){
@@ -421,6 +425,18 @@ public class Knight : Entity{
          _isPushing = true;
     }
 
+    //Only use this when there's already collision on X axis
+    public bool IsGrabbable( Rectangle entity, float elapsed = 0.0f ){
+        Rectangle position = CalibratePosition();
+        Console.WriteLine("Grab position: " + (position.Y - position.Height * 1 / 10));
+        Console.WriteLine("entity position: " +  entity.Y );
+        if( position.Y + position.Height * 1 / 3 < entity.Y ) 
+            return false;
+        if( position.Y > entity.Y )
+            return false ;
+        return true;
+    }
+
     //This will check X and Y axis for collision, I'll do some optimization for it after some time
     public override void HandleCollision( Rectangle entity, float elapsed = 0.0f ){
         //We already made change to the position, so this will reset 1 axis for checking collision at the other axis
@@ -428,8 +444,12 @@ public class Knight : Entity{
         ChangePosition( 0, -YSpeed );
         if( CheckCollision( entity ) == true ){
             ChangePosition( -XSpeed, 0 );
-            if( _isAttacking == 0 && _isDashing == false )
+            if( IsGrabbable( entity ) ){
+                Grabbing( elapsed );
+                return;
+            } else if( _isAttacking == 0 && _isDashing == false ){
                 Pushing( elapsed );
+            }
         }
         ChangePosition( 0, YSpeed );
         if( CheckCollision( entity ) == true ){
@@ -568,8 +588,37 @@ public class Knight : Entity{
         UpdateFrame( elapsed );
     }
 
+    public void Grabbing( float elapsed ){
+        if( _currentUnequippedState == UnequippedState.GrappedIdling ){
+            UpdateFrame( elapsed );   
+            return;
+        }
+        ChangeState("GrappedIdling");
+        _timePerFrame = 0.5f / _maxFrame;
+    }
+
+    public void LedgeClimbing( float elapsed ){
+        if( _currentUnequippedState == UnequippedState.LedgeGrabbing ){
+            UpdateFrame( elapsed );
+            return;
+        }
+        ChangeState("LedgeGrabbing");
+        _timePerFrame = 1f / _maxFrame;
+    }
+
     public void Control(float elapsed){
         KeyboardState temp = Keyboard.GetState();
+        if( _currentUnequippedState == UnequippedState.GrappedIdling ){
+            if( temp.IsKeyDown( Keys.Up ) ){
+                LedgeClimbing( elapsed );
+            } else if( temp.IsKeyDown( Keys.Down ) ){
+                ChangeState("Falling");
+            }
+            return;
+        }
+        if( _currentUnequippedState == UnequippedState.LedgeGrabbing ){
+            
+        }
         if( _isAttacking > 0 || _currentEquippedState == EquippedState.ShieldBashing ){
             Attacking( elapsed, temp.IsKeyDown(Keys.F) );
             return;
@@ -610,10 +659,6 @@ public class Knight : Entity{
             MoveLeft(elapsed);
         if( temp.IsKeyDown(Keys.Right) )
             MoveRight(elapsed);
-        if( temp.IsKeyDown(Keys.Down) )
-            YSpeed = 5;
-        if( temp.IsKeyDown(Keys.Up) )
-            YSpeed = -5;
         if( temp.IsKeyDown(Keys.Space) )
             Jumping( elapsed );
         if(  temp.IsKeyUp(Keys.Space) && _jumpTimer != JumpTime )

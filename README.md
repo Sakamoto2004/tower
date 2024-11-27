@@ -67,6 +67,7 @@ Just a project that I barely has some tome to work
 - [x] Dying
 - [x] Falling
 - [ ] Grabbing
+- [ ] Ledge climbing
 - [x] Hurting
 - [x] Idling
 - [x] Jumping
@@ -81,7 +82,7 @@ Just a project that I barely has some tome to work
     - [x] Power up attribute
 - [x] Pushing
 - [x] Shielding
-- [ ] Shield bashing
+- [x] Shield bashing
 - [x] Shielding up
 - [ ] Talking
 - [x] Walking
