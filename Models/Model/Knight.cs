@@ -63,7 +63,7 @@ public class Knight : Entity{
         _pushingTime = 0.0f;
         Damage = 1;
     }
-
+    
     public void Load(ContentManager content){
         Textures = new Texture2D[2][] ;
         Textures[0] = new Texture2D[(int)UnequippedState.Total];
@@ -141,9 +141,11 @@ public class Knight : Entity{
             position.X = Position.X + offset - 3;
             position.Width = Position.Width - (offset - 3) * 2 - offset / 3;
         } 
-        if( TextureEffect == SpriteEffects.FlipHorizontally )
+        if( TextureEffect == SpriteEffects.FlipHorizontally || _isAttacking == 4 )
             position.X -= position.Width;
         else position.X += ( position.Width + offset / 3 );
+        if( _isAttacking == 4 )
+            position.Width = 2 * position.Width + CalibratePosition().Width;
         return position;
     }
     
@@ -426,7 +428,8 @@ public class Knight : Entity{
         ChangePosition( 0, -YSpeed );
         if( CheckCollision( entity ) == true ){
             ChangePosition( -XSpeed, 0 );
-            Pushing( elapsed );
+            if( _isAttacking == 0 && _isDashing == false )
+                Pushing( elapsed );
         }
         ChangePosition( 0, YSpeed );
         if( CheckCollision( entity ) == true ){
@@ -455,7 +458,10 @@ public class Knight : Entity{
         if( _currentUnequippedState != UnequippedState.Total ){
             return;
         }
-        if( _isAttacking == 0 ){
+        if( _currentEquippedState == EquippedState.Shielding ){
+            ChangeState("ShieldBashing");
+        }
+        if( _isAttacking == 0 && _currentEquippedState != EquippedState.ShieldBashing ){
             ChangeState("Attack1");
             _timePerFrame = (float) 0.65 / _maxFrame;
             _isAttacking = 1;
@@ -472,6 +478,10 @@ public class Knight : Entity{
             return;
         }
         if( isContinue ){
+            if( _currentEquippedState == EquippedState.ShieldBashing ){
+                ChangeState("Idling");
+                return;
+            }
             if( _isAttacking == 4 )
                 _isAttacking = 1;
             else _isAttacking += 1;
@@ -541,7 +551,7 @@ public class Knight : Entity{
         return collided;
     }
 
-    public void ShieldUp( float elapsed ){
+    public void ShieldUp( float elapsed, bool attack = false ){
         if( _currentEquippedState != EquippedState.Shielding && 
             _currentEquippedState != EquippedState.ShieldUp &&
             _currentEquippedState != EquippedState.ShieldBashing ){
@@ -560,7 +570,7 @@ public class Knight : Entity{
 
     public void Control(float elapsed){
         KeyboardState temp = Keyboard.GetState();
-        if( _isAttacking > 0 ){
+        if( _isAttacking > 0 || _currentEquippedState == EquippedState.ShieldBashing ){
             Attacking( elapsed, temp.IsKeyDown(Keys.F) );
             return;
         }
