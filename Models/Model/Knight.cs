@@ -541,6 +541,23 @@ public class Knight : Entity{
         return collided;
     }
 
+    public void ShieldUp( float elapsed ){
+        if( _currentEquippedState != EquippedState.Shielding && 
+            _currentEquippedState != EquippedState.ShieldUp &&
+            _currentEquippedState != EquippedState.ShieldBashing ){
+            ChangeState("ShieldUp");
+            _timePerFrame = 0.5f / _maxFrame;
+            return;
+        }
+        if( _currentEquippedState == EquippedState.ShieldUp ){
+            if( _currentFrame == _maxFrame - 1 && _totalElapsed + elapsed > _timePerFrame ){
+                ChangeState("Shielding");
+                return;
+            }
+        }
+        UpdateFrame( elapsed );
+    }
+
     public void Control(float elapsed){
         KeyboardState temp = Keyboard.GetState();
         if( _isAttacking > 0 ){
@@ -602,6 +619,9 @@ public class Knight : Entity{
         if( temp.IsKeyDown( Keys.G ) ){
             PoweringUp( elapsed );
             return;
+        }
+        if( temp.IsKeyDown( Keys.Z ) ){
+            ShieldUp( elapsed );
         }
         if( temp.IsKeyDown( Keys.Q ) ){
             SwapState( elapsed );

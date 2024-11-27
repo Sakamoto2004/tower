@@ -79,10 +79,10 @@ Just a project that I barely has some tome to work
     - [x] Power up animation
     - [x] Power up cooldown
     - [x] Power up attribute
-- [ ] Pushing
-- [ ] Shielding
+- [x] Pushing
+- [x] Shielding
 - [ ] Shield bashing
-- [ ] Shielding up
+- [x] Shielding up
 - [ ] Talking
 - [x] Walking
 
