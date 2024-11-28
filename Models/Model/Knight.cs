@@ -428,8 +428,8 @@ public class Knight : Entity{
     //Only use this when there's already collision on X axis
     public bool IsGrabbable( Rectangle entity, float elapsed = 0.0f ){
         Rectangle position = CalibratePosition();
-        Console.WriteLine("Grab position: " + (position.Y - position.Height * 1 / 10));
-        Console.WriteLine("entity position: " +  entity.Y );
+        //Console.WriteLine("Grab position: " + (position.Y - position.Height * 1 / 10));
+        //Console.WriteLine("entity position: " +  entity.Y );
         if( position.Y + position.Height * 1 / 3 < entity.Y ) 
             return false;
         if( position.Y > entity.Y )
@@ -598,7 +598,25 @@ public class Knight : Entity{
     }
 
     public void LedgeClimbing( float elapsed ){
+        Console.WriteLine( _currentEquippedState + ", " + _currentFrame );
+        if( _currentFrame == _maxFrame - 1 && _totalElapsed + elapsed > _timePerFrame ){
+            ChangeState("Idling");
+            return;
+        }
         if( _currentUnequippedState == UnequippedState.LedgeGrabbing ){
+            XSpeed = 0; YSpeed = 0;
+            switch( _currentFrame ){
+                case 3: 
+                case 4:
+                    YSpeed = -3;
+                    break;
+                case 5:
+                    XSpeed = 4;
+                    break;
+            }
+            if( TextureEffect == SpriteEffects.FlipHorizontally )
+                XSpeed = -XSpeed;
+            ChangePosition(XSpeed, YSpeed);
             UpdateFrame( elapsed );
             return;
         }
@@ -617,7 +635,8 @@ public class Knight : Entity{
             return;
         }
         if( _currentUnequippedState == UnequippedState.LedgeGrabbing ){
-            
+            LedgeClimbing( elapsed );
+            return;
         }
         if( _isAttacking > 0 || _currentEquippedState == EquippedState.ShieldBashing ){
             Attacking( elapsed, temp.IsKeyDown(Keys.F) );
