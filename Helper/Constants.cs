@@ -227,4 +227,67 @@ public static class Constants
         };
     }
 
+    public static class Dungeon{
+        private static int TextureWidth = 16;
+        private static int TextureHeight = 16;
+
+        public enum Name{
+            UpperLeftStoneWall,
+            UpperMiddleStoneWall,
+            UpperRightStoneWall,
+
+            RightStairWay,
+            LeftStairWay,
+
+            Stone1,
+            Stone2,
+            UpperLeftWindow,
+            UpperRightWindow,
+            FewStone1,
+            FewStone2,
+
+            LeftStoneWall,
+            MiddleStoneWall,
+            RightStoneWall,
+
+            UpperLeftStairInside,
+            UpperRigthStairInside,
+
+            Stone3,
+            Stone4, 
+            LowerLeftWindow,
+            LowerRightWindow,
+            FewStone3, 
+            FewStone4,
+
+            LowerLeftStoneWall,
+            LowerMiddelStoneWall,
+            LowerRightStoneWall,
+
+            LowerLeftStairInside,
+            LowerRightStairInside,
+
+            Stone5,
+            Stone6,
+            UpperLeftSewer,
+            UpperRigthSewer,
+            FewStone5,
+            FewStone6,
+
+            Total,
+        }
+        
+        public static int[] SourceLocationX = new int[(int)Name.Total]{
+            1, 2, 3, 5, 6, 8, 9, 10, 11, 12, 13,
+            1, 2, 3, 5, 6, 8, 9, 10, 11, 12, 13,
+            1, 2, 3, 5, 6, 8, 9, 10, 11, 12, 13,
+        };
+        public static int[] SourceLocationY = new int[(int)Name.Total]{
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+        };
+
+
+    }
 }
