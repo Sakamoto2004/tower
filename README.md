@@ -66,8 +66,8 @@ Just a project that I barely has some tome to work
 - [x] Drinking
 - [x] Dying
 - [x] Falling
-- [ ] Grabbing
-- [ ] Ledge climbing
+- [x] Grabbing
+- [x] Ledge climbing
 - [x] Hurting
 - [x] Idling
 - [x] Jumping
