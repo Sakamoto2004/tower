@@ -308,9 +308,9 @@ public static class Constants
             Stone33,
 
             LeftBridge1, 
-            Middlebridge1, 
+            MiddleBridge1, 
             RightBridge1,
-            TopLadder,
+            Ladder,
             MiddleTable,
             RightTable,
             LeftTable,
@@ -318,6 +318,65 @@ public static class Constants
             Key,
             ClosedChest,
             OpenedChest,
+
+            LeftBridge2,
+            MiddleBridge2,
+            RightBridge2,
+            BrokenStair,
+            RightSign,
+            LeftSign,
+            Crate,
+            UpperClosedDoor,
+            UpperOpenedDoor,
+            
+            LeftBrokenBridge,
+            RightBrokenBridge,
+            LowerLadder,
+            Fence1,
+            Fence2, 
+            Fence3,
+            Fence4, 
+            LowerClosedDoor,
+            LowerOpenedDoor,
+
+            Chain1, 
+            Chain2, 
+            Chain3, 
+            Chain4, 
+            Chain5, 
+            Chain6, 
+            UpperLeftCage,
+            UpperMiddelCage,
+            UpperRightCage,
+            Barrel,
+            CopperVase,
+            StoneVase,
+
+            Chain7, 
+            LeftSkulls,
+            MiddleSkulls,
+            RightSkulls,
+            LowerLeftCage,
+            LowerMiddleCage,
+            LowerRightCage,
+
+            Spike1,
+            Spike2,
+            Spike3,
+            Spike4,
+            Spike5,
+            Spike6, 
+            Cobweb1,
+            Cobweb2,
+            Cobweb3,
+            Cobweb4,
+
+            ChainSaw1,
+            ChainSaw2, 
+            ChainSaw3, 
+            ChainSaw4,
+            ChainSaw5, 
+            ChainSaw6,
 
             Total,
         }
@@ -331,19 +390,29 @@ public static class Constants
             1, 2, 3,       6, 7, 8, 9, 10, 11, 12,
             1, 2, 3,       6, 7, 8, 9, 10, 11, 12,
             1, 2, 3,    5,    7, 8, 9, 10, 11, 12, 13, 
-
+            1, 2, 3,    5,    7, 8,    10,     12, 13,
+            1, 2,       5,    7, 8, 9, 10,     12, 13,
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+               2,    4, 5, 6, 7, 8, 9, 
+            1, 2, 3, 4, 5, 6,          10, 11, 12, 13,
+                              7, 8, 9, 10, 11, 12
         };
+
         public static int[] SourceLocationY = new int[(int)Name.Total]{
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            4, 4, 4, 4, 4,
-            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 
-            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 
-            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-        };
-
-
+             1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
+             2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,
+             3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,
+             4,  4,  4,  4,  4,
+             5,  5,  5,  5,  5,  5,  5,  5,  5,  5, 
+             6,  6,  6,  6,  6,  6,  6,  6,  6,  6, 
+             7,  7,  7,  7,  7,  7,  7,  7,  7,  7, 
+             9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
+            10, 10, 10, 10, 10, 10, 10, 10, 10,
+            11, 11, 11, 11, 11, 11, 11, 11, 11,
+            12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 
+            13, 13, 13, 13, 13, 13, 13,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            15, 15, 15, 15, 15, 15
+         };
     }
 }
