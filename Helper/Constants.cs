@@ -228,9 +228,16 @@ public static class Constants
     }
 
     public static class Dungeon{
-        private static int TextureWidth = 16;
-        private static int TextureHeight = 16;
+        private static int _textureWidth = 16;
+        private static int _textureHeight = 16;
 
+        public static int TextureHeight{
+            get => _textureHeight;
+        }
+
+        public static int TextureWidth{
+            get => _textureWidth;
+        }
         public enum Name{
             UpperLeftStoneWall,
             UpperMiddleStoneWall,
