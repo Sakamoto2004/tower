@@ -78,14 +78,6 @@ public class Entity{
         }
     }
 
-    /// This will simply add the @param name="x" and @param name="y" to the position of the object
-    public void ChangePosition( int x, int y = 0){
-        Rectangle position = Position;
-        position.X += x;
-        position.Y += y;
-        Position = position;
-    }
-
     public virtual void MoveLeft(float elapsed){
         ChangePosition(-Constants.Knight.WalkingSpeed, 0);
         TextureEffect = SpriteEffects.FlipHorizontally;
@@ -140,6 +132,11 @@ public class Entity{
         position.X = x;
         position.Y = y;
         Position = position;
+    }
+
+    /// This will simply add the @param name="x" and @param name="y" to the position of the object
+    public void ChangePosition( int x, int y = 0){
+        SetPosition( Position.X + x, Position.Y + y );
     }
 
     //This will check X and Y axis for collision, I'll do some optimization for it after some time
