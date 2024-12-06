@@ -8,6 +8,7 @@ public class Entity{
     public Texture2D DefaultTexture{ get; set; }
     public CollisionChecker CollisionChecker{ get; set; }
     public Rectangle Position{ get; set; }
+    public Rectangle SourceRectangle{ get; set; }
     public int XSpeed{ get; set; }
     public int YSpeed{ get; set; }
     public bool Paused{ get; set; }    
@@ -90,29 +91,6 @@ public class Entity{
         UpdateFrame(elapsed);
     }
 
-//    public void HandleCollision( Rectangle entity ){
-//        
-//        if( Position.X < entity.X + entity.Width &&
-//                Position.X + Position.Width > entity.X + entity.Width ){
-//            Console.WriteLine("Collided Left");
-//            if( XSpeed < 0 ) ChangePosition( -XSpeed, 0 );
-//        }
-//        if( Position.X + Position.Width > entity.X &&
-//            Position.X < entity.X){
-//           Console.WriteLine("Collided Right");
-//           if( XSpeed > 0 ) ChangePosition( -XSpeed, 0);
-//        }
-//        if( Position.Y + Position.Height > entity.Y &&
-//            Position.Y < entity.Y){
-//            Console.WriteLine("Collided Down");
-//            if( YSpeed > 0 ) ChangePosition( 0, -YSpeed );
-//        }
-//        if( Position.Y + Position.Height > entity.Y + entity.Height &&
-//            Position.Y < entity.Y + entity.Height ){
-//            Console.WriteLine("Collided Up");
-//            if( YSpeed < 0 ) ChangePosition( 0, -YSpeed );
-//        }
-//    }
     public virtual bool CheckCollision( Rectangle entity ){
         bool collided = false;
         //This collision check will check the left side of the entity
@@ -171,4 +149,8 @@ public class Entity{
         XSpeed = 0;
     }
 
+    public virtual void Draw(SpriteBatch batch ){
+        Vector2 position = new Vector2(){ X = Position.X, Y = Position. Y};
+        batch.Draw(DefaultTexture, position, SourceRectangle, Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
+    }
 }

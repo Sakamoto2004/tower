@@ -31,10 +31,11 @@ public class Engine : Game
         _knight = new Knight(){ XSpeed = 5 };
         _map = new MapObjects();
 
-        _map.AddObject(new Entity());
-        _map.AddObject(new Entity());
-        _map.AddObject(new Entity());
-        _map.AddObject(new Entity());
+        _map.AddEntity(new Entity());
+        _map.AddEntity(new Entity());
+        _map.AddEntity(new Entity());
+        _map.AddEntity(new Entity());
+        _map.AddObject(new StoneWall());
         base.Initialize();
     }
 
@@ -47,7 +48,7 @@ public class Engine : Game
 //        if( _blueWitch.Textures == null )
 //            throw new Exception("Texture is null");
         _knight.Load(Content);
-        if(_knight.SourceRectangle == null)
+        if(_knight.SourceRectangles == null)
             throw new Exception("Unable to initialize source rectangle");
         if( _knight.Textures == null )
             throw new Exception("Texture is null");
@@ -84,10 +85,15 @@ public class Engine : Game
             Width = 30,
             Height = _viewport.Height
         }; 
+        
+        StoneWall temp = new StoneWall();
+        temp.Load( Content, 1 );
+        temp.SetPosition( _viewport.Width * 1 / 5, 250, 10, _viewport.Height );
+        _map.AddObject( temp );
 
         Texture2D defaultTexture = new Texture2D(GraphicsDevice, 1, 1);
         defaultTexture.SetData(new Color[] { Color.White });
-        _map.Load( defaultTexture );
+        _map.LoadEntities( defaultTexture );
         // TODO: use this.Content to load your game content here
     }
 
@@ -111,11 +117,10 @@ public class Engine : Game
         _texture.SetData(new Color[] { Color.White });
         _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
-        _map.Draw( _spriteBatch );
         _spriteBatch.Draw(_texture, _knight.CalibratePosition(), Color.White);
         _spriteBatch.Draw(_texture, _knight.CalibrateAttackHitbox(), Color.Red);
         _knight.Draw(_spriteBatch);
-
+        _map.Draw( _spriteBatch );
         _spriteBatch.End();
         base.Draw(gameTime);
     }

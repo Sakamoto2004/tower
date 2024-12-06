@@ -13,7 +13,7 @@ public class Knight : Entity{
     public Texture2D[][] Textures{ get; set; }
 
     //This is because the texture pack has 2 state, unequipped and equipped, with many texutre, and in which has many small pictures
-    public Rectangle[][][] SourceRectangle{ get; set; }
+    public Rectangle[][][] SourceRectangles{ get; set; }
     public int Damage{ get; set; }
 
     //I have to split into 2 because there are 2 state with different textures.
@@ -69,31 +69,31 @@ public class Knight : Entity{
         Textures[0] = new Texture2D[(int)UnequippedState.Total];
         Textures[1] = new Texture2D[(int)EquippedState.Total];
 
-        SourceRectangle = new Rectangle[2][][];
+        SourceRectangles = new Rectangle[2][][];
         for( int armed = 0; armed < 2; ++armed ){
             int maxState = 0;
             if( armed == 0 ){
-                SourceRectangle[armed] = new Rectangle[(int)UnequippedState.Total][];
+                SourceRectangles[armed] = new Rectangle[(int)UnequippedState.Total][];
                 maxState = (int)UnequippedState.Total;
             }
             else{
-                SourceRectangle[armed] = new Rectangle[(int)EquippedState.Total][];
+                SourceRectangles[armed] = new Rectangle[(int)EquippedState.Total][];
                 maxState = (int)EquippedState.Total;
             }
             for( int state = 0; state < maxState; ++state ){
                 if( armed == 0 ){
-                    SourceRectangle[armed][state] = new Rectangle[(int) UnequippedTextureFrames[ state ]];
+                    SourceRectangles[armed][state] = new Rectangle[(int) UnequippedTextureFrames[ state ]];
                     Textures[armed][state] = content.Load<Texture2D>( UnequippedTextureName[ state ] );
                 } else {
-                    SourceRectangle[armed][state] = new Rectangle[(int) EquippedTextureFrames[ state ]];
+                    SourceRectangles[armed][state] = new Rectangle[(int) EquippedTextureFrames[ state ]];
                     Textures[armed][state] = content.Load<Texture2D>( EquippedTextureName[ state ] );
                 }
-                for( int frame = 0; frame < SourceRectangle[armed][state].Length; ++frame ){
-                    SourceRectangle[armed][state][frame].Y = 0;
-                    SourceRectangle[armed][state][frame].X = SourceSize.Width * frame;
-                    SourceRectangle[armed][state][frame].Height = SourceSize.Height;
-                    SourceRectangle[armed][state][frame].Width = SourceSize.Width;
-                    SourceRectangle[armed][state][frame] = CalibrateSource( SourceRectangle[armed][state][frame] );
+                for( int frame = 0; frame < SourceRectangles[armed][state].Length; ++frame ){
+                    SourceRectangles[armed][state][frame].Y = 0;
+                    SourceRectangles[armed][state][frame].X = SourceSize.Width * frame;
+                    SourceRectangles[armed][state][frame].Height = SourceSize.Height;
+                    SourceRectangles[armed][state][frame].Width = SourceSize.Width;
+                    SourceRectangles[armed][state][frame] = CalibrateSource( SourceRectangles[armed][state][frame] );
                 }
             }
         }
@@ -214,15 +214,15 @@ public class Knight : Entity{
     public override Rectangle CurrentFrameSource(){
         //Console.WriteLine( _currentEquippedState + ", " + _currentFrame );
         if( _currentUnequippedState == UnequippedState.Total )
-            return SourceRectangle[_armed][(int) _currentEquippedState][_currentFrame];
-        else return SourceRectangle[_unarmed][(int) _currentUnequippedState][_currentFrame];
+            return SourceRectangles[_armed][(int) _currentEquippedState][_currentFrame];
+        else return SourceRectangles[_unarmed][(int) _currentUnequippedState][_currentFrame];
     }
 
     public override void NextFrame(){
         _currentFrame = ++_currentFrame % _maxFrame;
     }
 
-    public void Draw(SpriteBatch batch ){
+    public override void Draw(SpriteBatch batch ){
         Vector2 position = new Vector2(){ X = Position.X, Y = Position.Y };
         if( _currentUnequippedState == UnequippedState.Total )
             batch.Draw(Textures[_armed][(int) _currentEquippedState], position, CurrentFrameSource(), Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
@@ -287,6 +287,11 @@ public class Knight : Entity{
         }
         for( int i = 0; i < objects.Entities.Count; ++i ){
             Entity temp = objects.Entities[i];
+            if( temp.CheckCollision( temp.Position ) )
+                HandleCollision( temp.Position, elapsed );
+        }
+        for( int i = 0; i < objects.Objects.Count; ++i ){
+            Object temp = objects.Objects[i];
             if( temp.CheckCollision( temp.Position ) )
                 HandleCollision( temp.Position, elapsed );
         }

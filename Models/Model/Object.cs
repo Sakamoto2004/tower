@@ -44,4 +44,28 @@ public class Object{
     public void printCurrentPosition(){
         //Console.Write(ToString() + "\n=========\n" + $"X: {Position.X}\nY: {Position.Y}\nWidth: {Position.Width}\nHeight: {Position.Height}\n");
     }
+
+    public virtual bool CheckCollision( Rectangle entity ){
+        bool collided = false;
+        //This collision check will check the left side of the entity
+        if (Position.X + Position.Width > entity.X &&
+            Position.X < entity.X + entity.Width && 
+            Position.Y + Position.Height > entity.Y &&
+            Position.Y < entity.Y + entity.Height
+            )
+        {
+            collided = true;
+        } 
+        return collided;
+    }
+    
+    protected void Debug(){
+        Console.WriteLine("Position: " + Position.X + ", " + Position.Y + ", " +  Position.Width + ", " + Position.Height );
+    }
+
+    public virtual void Draw(SpriteBatch batch ){
+        Debug();
+        Vector2 position = new Vector2(){ X = Position.X, Y = Position. Y};
+        batch.Draw(DefaultTexture, position, SourceRectangle, Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
+    }
 }
