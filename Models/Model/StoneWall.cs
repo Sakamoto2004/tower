@@ -45,23 +45,20 @@ public class StoneWall : Object {
     }
 
     public override void Draw( SpriteBatch batch ){
-        Vector2 position = new Vector2(){ X = Position.X, Y = Position.Y };
         //base.Debug();
         int times = Position.Width / TextureWidth;
-        int temp = 1;
+        int temp = 0;
         while( times > 0 ){
-            Vector2 tmpPosition = new Vector2(){ X = position.X + TextureWidth * temp, Y = position.Y };
-            batch.Draw(DefaultTexture, position, SourceRectangle, Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
+            Vector2 tmpPosition = new Vector2(){ X = Position.X + TextureWidth * temp * Scale, Y = Position.Y };
+            batch.Draw(DefaultTexture, tmpPosition, SourceRectangle, Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
             ++temp;
             --times;
         }
         times = Position.Height / TextureHeight;
-        temp = 1;
-        Console.WriteLine( "times: " + times ) ;
+        temp = 0;
         while( times > 0 ){
-            Vector2 tmpPosition = new Vector2(){ X = position.X , Y = position.Y + TextureHeight * temp };
-            Console.WriteLine("Position: " + tmpPosition.X + ", " + tmpPosition.Y + ", " );
-            batch.Draw(DefaultTexture, position, SourceRectangle, Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
+            Vector2 tmpPosition = new Vector2(){ X = Position.X , Y = Position.Y + TextureHeight * temp * Scale};
+            batch.Draw(DefaultTexture, tmpPosition, SourceRectangle, Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
             ++temp;
             --times;
         }
