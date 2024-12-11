@@ -257,9 +257,9 @@ public static class Constants
             Stone3,
             Stone4,
 
-            LeftStoneWall,
+            MiddleLeftStoneWall,
             MiddleStoneWall,
-            RightStoneWall,
+            MiddleRightStoneWall,
             UpperLeftStairInside,
             UpperRigthStairInside,
             Stone5,

@@ -4,40 +4,24 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Models.Model;
-public class StoneWall : Object {
-    public StoneWall()
+public class Stone : Object {
+    public Stone()
         : base(){
         IsPassable = true;
     }
-
-    public enum StoneWallName{
-        UpperLeft,
-        UpperMiddle,
-        UpperRight,
-        MiddleLeft,
-        Middle,
-        MiddleRight,
-        LowerLeft,
-        LowerMiddle,
-        LowerRight,
-    }
     
-    public void Load(ContentManager content, StoneWallName textureName){
+    public void Load(ContentManager content, int textureNo = 1 ){
         Rectangle source = Rectangle.Empty;
         int sourceTarget = -1;
+        if( textureNo < 1 || textureNo > 33 )
+            textureNo = 1;
         string[] temp = Enum.GetNames( typeof(Name) );
-        string? target = Enum.GetName( textureName );
-        if( target == null )
-            target = "Middle";
-        Console.WriteLine( target );
         for( int index = 0; index < temp.Length; ++index ){
-            if( temp[index].Contains( textureName + "StoneWall") ){
+            if( temp[index].Contains("Stone" + textureNo) ){
                 sourceTarget = index;
                 break;
             }
         }
-        if( sourceTarget == -1 )
-            sourceTarget = 1;
         source.X = SourceLocationX[sourceTarget] * TextureWidth;
         source.Y = SourceLocationY[sourceTarget] * TextureHeight;
         source.Width = TextureWidth;

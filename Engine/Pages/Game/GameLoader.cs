@@ -25,7 +25,7 @@ public class GameLoader{
         _map.AddEntity(new Entity());
         _map.AddEntity(new Entity());
         _map.AddEntity(new Entity());
-        _map.AddObject(new StoneWall());
+        _map.AddObject(new Stone());
     }
 
     public void LoadContent(ContentManager content){
@@ -35,45 +35,33 @@ public class GameLoader{
             throw new Exception("Unable to initialize source rectangle");
         if( _knight.Textures == null )
             throw new Exception("Texture is null");
+
+        StoneWall temp = new StoneWall();
+        temp.Load( content, StoneWall.StoneWallName.LowerMiddle );
+        temp.SetPosition( 0, 50, 800, 16);
+        _map.AddObject( temp );
+
+        temp = new StoneWall();
+        temp.Load( content, StoneWall.StoneWallName.UpperMiddle );
+        temp.SetPosition( 0, 350, 800, 16);
+        _map.AddObject( temp );
+
+        temp = new StoneWall();
+        temp.Load( content, StoneWall.StoneWallName.MiddleRight );
+        temp.SetPosition( 50, 250, 16, 800);
+        _map.AddObject( temp );
+
+        temp = new StoneWall();
+        temp.Load( content, StoneWall.StoneWallName.MiddleLeft );
+        temp.SetPosition( 350, 250, 16, 800);
+        _map.AddObject( temp );
+
         _knight.Position = new Rectangle(){
             X = 150,
             Y = 150,
             Height = Constants.Knight.SourceSize.Height,
             Width = Constants.Knight.SourceSize.Width
         };
-
-        _map.Entities[0].Position = new Rectangle(){
-            Y = 50,
-            X = 0,
-            Width = 800,
-            Height = 10
-        };
-
-        _map.Entities[1].Position = new Rectangle(){
-            Y = 350,
-            X = 0,
-            Width = 800,
-            Height = 10
-        }; 
-        
-        _map.Entities[2].Position = new Rectangle(){
-            X = 50,
-            Y = 250,
-            Width = 10,
-            Height = 800
-        }; 
-
-        _map.Entities[3].Position = new Rectangle(){
-            X = 350,
-            Y = 250,
-            Width = 30,
-            Height = 800
-        }; 
-        
-        StoneWall temp = new StoneWall();
-        temp.Load( content, 1 );
-        temp.SetPosition( 25 * 1 / 5, 250, 10, 240 );
-        _map.AddObject( temp );
 
         Texture2D defaultTexture = new Texture2D(_graphicsDevice, 1, 1);
         defaultTexture.SetData(new Color[] { Color.White });
