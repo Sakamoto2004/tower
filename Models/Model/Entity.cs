@@ -112,6 +112,14 @@ public class Entity{
         Position = position;
     }
 
+    public Rectangle GetPosition( ){
+        Rectangle position = Position;
+        position.Width = (int) (Position.Width * Scale);
+        position.Height = (int) (Position.Height * Scale);
+        return position;
+    }   
+
+
     /// This will simply add the @param name="x" and @param name="y" to the position of the object
     public void ChangePosition( int x, int y = 0){
         SetPosition( Position.X + x, Position.Y + y );

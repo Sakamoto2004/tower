@@ -209,6 +209,9 @@ public class Knight : Entity{
         }
         _currentEquippedState = EquippedState.Idling;
         _currentUnequippedState = UnequippedState.Total;
+        XSpeed = -4;
+        if( TextureEffect == SpriteEffects.FlipHorizontally )
+            XSpeed *= -1;
     }
 
     public override Rectangle CurrentFrameSource(){
@@ -287,13 +290,13 @@ public class Knight : Entity{
         }
         for( int i = 0; i < objects.Entities.Count; ++i ){
             Entity temp = objects.Entities[i];
-            if( temp.CheckCollision( temp.Position ) )
-                HandleCollision( temp.Position, elapsed );
+            if( temp.CheckCollision( temp.GetPosition() ) )
+                HandleCollision( temp.GetPosition(), elapsed );
         }
         for( int i = 0; i < objects.Objects.Count; ++i ){
             Object temp = objects.Objects[i];
-            if( temp.CheckCollision( temp.Position ) )
-                HandleCollision( temp.Position, elapsed );
+            if( temp.CheckCollision( temp.GetPosition() ) )
+                HandleCollision( temp.GetPosition(), elapsed );
         }
         XSpeed = 0;
         //Console.WriteLine("Falling speed: " + YSpeed );
