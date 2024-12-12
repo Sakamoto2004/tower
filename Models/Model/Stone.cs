@@ -7,7 +7,7 @@ namespace Models.Model;
 public class Stone : Object {
     public Stone()
         : base(){
-        IsPassable = true;
+        IsPassable = false;
     }
     
     public void Load(ContentManager content, int textureNo = 1 ){

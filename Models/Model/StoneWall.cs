@@ -7,7 +7,7 @@ namespace Models.Model;
 public class StoneWall : Object {
     public StoneWall()
         : base(){
-        IsPassable = true;
+        IsPassable = false;
     }
 
     public enum StoneWallName{

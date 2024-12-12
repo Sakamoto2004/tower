@@ -97,7 +97,7 @@ public class Entity{
         if (Position.X + Position.Width > entity.X &&
             Position.X < entity.X + entity.Width && 
             Position.Y + Position.Height > entity.Y &&
-            Position.Y < entity.Y + entity.Height
+            Position.Y < entity.Y + entity.Height 
             )
         {
             collided = true;
