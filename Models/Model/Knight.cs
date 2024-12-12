@@ -635,7 +635,7 @@ public class Knight : Entity{
     public void Interact( MapObjects objects ){
         for( int i = 0; i < objects.Objects.Count; ++i ){
             Object temp = objects.Objects[i];
-            if( temp.CheckCollision( CalibrateAttackHitbox() ) )
+            if( temp.CheckCollision( CalibrateAttackHitbox(), false ) )
                 temp.Interact( Constants.Knight.Action.Interact );
         }
 

@@ -53,17 +53,19 @@ public class Object{
         //Console.Write(ToString() + "\n=========\n" + $"X: {Position.X}\nY: {Position.Y}\nWidth: {Position.Width}\nHeight: {Position.Height}\n");
     }
 
-    public virtual bool CheckCollision( Rectangle entity ){
+    public virtual bool CheckCollision( Rectangle entity, bool hardCollision = true ){
         bool collided = false;
         //This collision check will check the left side of the entity
         if (Position.X + Position.Width > entity.X &&
             Position.X < entity.X + entity.Width && 
             Position.Y + Position.Height > entity.Y &&
-            Position.Y < entity.Y + entity.Height &&
-            IsPassable == false
+            Position.Y < entity.Y + entity.Height 
             )
         {
-            collided = true;
+            //This is when the character move (hardCollision)
+            if( (IsPassable == false && hardCollision == true) || hardCollision == false )
+                collided = true;
+            
         } 
         return collided;
     }
