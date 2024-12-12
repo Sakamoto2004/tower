@@ -606,7 +606,7 @@ public class Knight : Entity{
     }
 
     public void LedgeClimbing( float elapsed ){
-        Console.WriteLine( _currentEquippedState + ", " + _currentFrame );
+        //Console.WriteLine( _currentEquippedState + ", " + _currentFrame );
         if( _currentFrame == _maxFrame - 1 && _totalElapsed + elapsed > _timePerFrame ){
             ChangeState("Idling");
             return;

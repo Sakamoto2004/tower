@@ -29,7 +29,7 @@ public class Object{
         TextureEffect = SpriteEffects.None;
     }
 
-    public void SetPosition( int x, int y ){
+    public virtual void SetPosition( int x, int y ){
         Rectangle position = Position;
         position.X = x;
         position.Y = y;
@@ -42,6 +42,7 @@ public class Object{
         position.Height = (int) (Position.Height * Scale);
         return position;
     }   
+
     /// This will simply add the @param name="x" and @param name="y" to the position of the object
     public void ChangePosition( int x, int y = 0){
         SetPosition( Position.X + x, Position.Y + y );
