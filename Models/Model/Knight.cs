@@ -290,12 +290,12 @@ public class Knight : Entity{
         }
         for( int i = 0; i < objects.Entities.Count; ++i ){
             Entity temp = objects.Entities[i];
-            if( temp.CheckCollision( temp.GetPosition() ) )
+            if( temp.CheckCollision( GetPosition() ) )
                 HandleCollision( temp.GetPosition(), elapsed );
         }
         for( int i = 0; i < objects.Objects.Count; ++i ){
             Object temp = objects.Objects[i];
-            if( temp.CheckCollision( temp.GetPosition() ) )
+            if( temp.CheckCollision( GetPosition() ) )
                 HandleCollision( temp.GetPosition(), elapsed );
         }
         XSpeed = 0;
@@ -422,8 +422,8 @@ public class Knight : Entity{
             }
             _currentFrame = frameIndex;
         }
-
     }
+
     //I have to make it check using flag as moving already changed the texture so I can't make it check using state
     public void Pushing( float elapsed ){
          if( _isPushing ){
@@ -632,7 +632,16 @@ public class Knight : Entity{
         _timePerFrame = 1f / _maxFrame;
     }
 
-    public void Control(float elapsed){
+    public void Interact( MapObjects objects ){
+        for( int i = 0; i < objects.Objects.Count; ++i ){
+            Object temp = objects.Objects[i];
+            if( temp.CheckCollision( CalibrateAttackHitbox() ) )
+                temp.Interact( Constants.Knight.Action.Interact );
+        }
+
+    }   
+
+    public void Control(float elapsed, MapObjects mapObjects){
         KeyboardState temp = Keyboard.GetState();
         if( _currentUnequippedState == UnequippedState.GrappedIdling ){
             if( temp.IsKeyDown( Keys.Up ) ){
@@ -694,6 +703,8 @@ public class Knight : Entity{
             ChangeEquippedState(EquippedState.Crouching);
         if( temp.IsKeyDown(Keys.E) )
             Drinking( elapsed );
+        if( temp.IsKeyDown(Keys.I) )
+            Interact( mapObjects );
         if( temp.IsKeyDown(Keys.K) ){
             Hurting( elapsed );
             return;

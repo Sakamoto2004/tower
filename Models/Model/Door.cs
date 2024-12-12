@@ -2,6 +2,7 @@ using static Helper.Constants.Dungeon;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Helper;
 
 namespace Models.Model;
 public class Door : Object{
@@ -32,7 +33,8 @@ public class Door : Object{
         };
     }
 
-    public void Interact(){
+    public override void Interact( Constants.Knight.Action action ){
+        Rectangle temp = Position;
         if( _isClosed ){
             SourceRectangle = new Rectangle(){
                 X = SourceLocationX[(int) Name.UpperOpenedDoor ],
@@ -42,6 +44,7 @@ public class Door : Object{
                 Height = TextureHeight * 2,
             };
             IsPassable = true;
+            temp.Width = TextureWidth;
         } else {
             SourceRectangle = new Rectangle(){
                 X = SourceLocationX[(int) Name.UpperClosedDoor ],
@@ -51,6 +54,7 @@ public class Door : Object{
                 Height = TextureHeight * 2,
             };
             IsPassable = false;
+            temp.Width = TextureWidth * 2 / 5;
         }
         _isClosed = !_isClosed;
     }

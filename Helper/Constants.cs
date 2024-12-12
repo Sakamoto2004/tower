@@ -99,6 +99,13 @@ public static class Constants
             get => _sourceSize;
         }
 
+        public enum Action{
+            Smash,
+            Interact,
+            Looking,
+            Talking,
+        }
+
         public enum UnequippedState{
             CrouchingIdling,
             Crouching,

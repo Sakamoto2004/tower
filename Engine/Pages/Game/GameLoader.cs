@@ -75,7 +75,7 @@ public class GameLoader{
     }
 
     public void Update(float elapsed){
-        _knight.Control( elapsed );
+        _knight.Control( elapsed, _map);
         _knight.Moving(_map, elapsed);
     }
 

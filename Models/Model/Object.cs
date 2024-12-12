@@ -1,6 +1,7 @@
 #nullable disable
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Helper;
 namespace Models.Model;
 
 public class Object{
@@ -74,5 +75,9 @@ public class Object{
         Debug();
         Vector2 position = new Vector2(){ X = Position.X, Y = Position. Y};
         batch.Draw(DefaultTexture, position, SourceRectangle, Color.White, Rotation, Origin, Scale, TextureEffect, Depth );    
+    }
+
+    public virtual void Interact( Constants.Knight.Action action ){
+         
     }
 }
