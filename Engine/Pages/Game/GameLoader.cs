@@ -61,6 +61,11 @@ public class GameLoader{
         door.SetPosition( 450, 268 );
         _map.AddObject( door );
 
+        Chest chest = new Chest();
+        chest.Load( content );
+        chest.SetPosition( 500, 288 );
+        _map.AddObject( chest );
+
         _knight.Position = new Rectangle(){
             X = 150,
             Y = 150,
@@ -85,7 +90,7 @@ public class GameLoader{
         _texture.SetData(new Color[] { Color.White });
         _spriteBatch.Draw(_texture, _knight.CalibratePosition(), Color.White);
         _spriteBatch.Draw(_texture, _knight.CalibrateAttackHitbox(), Color.Red);
-        _spriteBatch.Draw(_texture, _map.Objects[5].GetPosition(), Color.White );
+        _spriteBatch.Draw(_texture, _map.Objects[6].GetPosition(), Color.White );
         _knight.Draw(_spriteBatch);
         _map.Draw( _spriteBatch );
     }
