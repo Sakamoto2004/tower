@@ -39,6 +39,7 @@ public class Knight : Entity{
     //Have to add this because the model only push if they're moving, which mean we have to have this variable to know
     //How long has the model pushed
     private float _pushingTime;
+    private float _interactCooldown;
 
     public Knight() : base(){
         _jumpTimer = Constants.Knight.JumpTime;
@@ -633,12 +634,15 @@ public class Knight : Entity{
     }
 
     public void Interact( MapObjects objects ){
+        if( _interactCooldown > 0 ){
+            return;
+        }
         for( int i = 0; i < objects.Objects.Count; ++i ){
             Object temp = objects.Objects[i];
             if( temp.CheckCollision( CalibrateAttackHitbox(), false ) )
                 temp.Interact( Constants.Knight.Action.Interact );
         }
-
+        _interactCooldown = 0.5f;
     }   
 
     public void Control(float elapsed, MapObjects mapObjects){
@@ -685,6 +689,9 @@ public class Knight : Entity{
             PoweringUp( elapsed );
             return;
         } 
+        if( _interactCooldown > 0 ){
+            _interactCooldown -= elapsed;
+        }
         PowerRemain( elapsed );
         if( temp.IsKeyDown(Keys.LeftControl) ){
             Crouching(elapsed);
