@@ -40,6 +40,7 @@ public class Knight : Entity{
     //How long has the model pushed
     private float _pushingTime;
     private float _interactCooldown;
+    private int _keys;
 
     public Knight() : base(){
         _jumpTimer = Constants.Knight.JumpTime;
@@ -296,8 +297,13 @@ public class Knight : Entity{
         }
         for( int i = 0; i < objects.Objects.Count; ++i ){
             Object temp = objects.Objects[i];
-            if( temp.CheckCollision( GetPosition() ) )
+            if( temp.CheckCollision( GetPosition() ) ){
+                if( temp.IsPickupable && temp.ObjectName == "Keys" ){
+                    _keys += 1;
+                    objects.Objects.Remove( temp );
+                }
                 HandleCollision( temp.GetPosition(), elapsed );
+            }
         }
         XSpeed = 0;
         //Console.WriteLine("Falling speed: " + YSpeed );
@@ -640,7 +646,10 @@ public class Knight : Entity{
         for( int i = 0; i < objects.Objects.Count; ++i ){
             Object temp = objects.Objects[i];
             if( temp.CheckCollision( CalibrateAttackHitbox(), false ) )
-                temp.Interact( Constants.Knight.Action.Interact );
+                if( temp.ObjectName == "ClosedChest" && _keys > 0 ){
+                    temp.Interact( Constants.Knight.Action.Interact );
+                    _keys -= 1;
+                }
         }
         _interactCooldown = 0.5f;
     }   

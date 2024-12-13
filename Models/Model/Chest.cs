@@ -11,6 +11,7 @@ public class Chest : Object{
     public bool IsOpened{ get; set; }
     public Chest(){
         IsOpened = false;
+        ObjectName = "ClosedChest";
     }
 
     public void Load( ContentManager Content ){
@@ -39,5 +40,6 @@ public class Chest : Object{
         temp.Y = SourceLocationY[(int) Name.OpenedChest] * TextureHeight;
         IsOpened = true;
         SourceRectangle = temp;
+        ObjectName = "OpenedChest";
     }
 }

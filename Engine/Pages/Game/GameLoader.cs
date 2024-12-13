@@ -63,8 +63,13 @@ public class GameLoader{
 
         Chest chest = new Chest();
         chest.Load( content );
-        chest.SetPosition( 500, 288 );
+        chest.SetPosition( 500, 300 );
         _map.AddObject( chest );
+
+        Key key = new Key();
+        key.Load( content );
+        key.SetPosition( 700, 300 );
+        _map.AddObject( key );
 
         _knight.Position = new Rectangle(){
             X = 150,

@@ -14,6 +14,8 @@ public class Object{
     public Vector2 Origin{ get; set; }
     public SpriteEffects TextureEffect{ get; set; }
     public bool IsPassable{ get; set; }
+    public bool IsPickupable{ get; set; }
+    public string ObjectName{ get; set; }
 
     public Object(){
         DefaultTexture = null;
@@ -24,6 +26,8 @@ public class Object{
         Origin = Vector2.Zero;
         TextureEffect = SpriteEffects.None;
         IsPassable = true;
+        IsPickupable = false;
+        ObjectName = "Object";
     }
 
     public virtual void LoadSource(){

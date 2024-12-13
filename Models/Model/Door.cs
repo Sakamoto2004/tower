@@ -12,6 +12,7 @@ public class Door : Object{
         : base(){
         IsPassable = false;
         _isClosed = true;
+        ObjectName = "Door";
     }
 
     public void Load( ContentManager Content ){
