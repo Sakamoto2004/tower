@@ -71,6 +71,11 @@ public class GameLoader{
         key.SetPosition( 700, 300 );
         _map.AddObject( key );
 
+        SignBoard sign = new SignBoard();
+        sign.Load( content, false );
+        sign.SetPosition( 450, 200 ); 
+        _map.AddObject( sign );
+
         _knight.Position = new Rectangle(){
             X = 150,
             Y = 150,
@@ -95,7 +100,7 @@ public class GameLoader{
         _texture.SetData(new Color[] { Color.White });
         _spriteBatch.Draw(_texture, _knight.CalibratePosition(), Color.White);
         _spriteBatch.Draw(_texture, _knight.CalibrateAttackHitbox(), Color.Red);
-        _spriteBatch.Draw(_texture, _map.Objects[6].GetPosition(), Color.White );
+        _spriteBatch.Draw(_texture, _map.Objects[8].GetPosition(), Color.White );
         _knight.Draw(_spriteBatch);
         _map.Draw( _spriteBatch );
     }

@@ -649,6 +649,8 @@ public class Knight : Entity{
                 if( temp.ObjectName == "ClosedChest" && _keys > 0 ){
                     temp.Interact( Constants.Knight.Action.Interact );
                     _keys -= 1;
+                } else if( temp.ObjectName != "ClosedChest" ){
+                    temp.Interact( Constants.Knight.Action.Interact );
                 }
         }
         _interactCooldown = 0.5f;
