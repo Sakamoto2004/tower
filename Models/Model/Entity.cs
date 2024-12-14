@@ -17,6 +17,7 @@ public class Entity{
     public float Depth{ get; set; }
     public Vector2 Origin{ get; set; }
     public SpriteEffects TextureEffect{ get; set; }
+    public Rectangle OldPosition{ get; set; }
 
     protected float _frameCycle{ get; set; }
     protected int _currentFrame{ get; set; }
@@ -94,9 +95,9 @@ public class Entity{
     public virtual bool CheckCollision( Rectangle entity ){
         bool collided = false;
         //This collision check will check the left side of the entity
-        if (Position.X + Position.Width > entity.X &&
+        if (Position.X + GetPosition().Width > entity.X &&
             Position.X < entity.X + entity.Width && 
-            Position.Y + Position.Height > entity.Y &&
+            Position.Y + GetPosition().Height > entity.Y &&
             Position.Y < entity.Y + entity.Height 
             )
         {
@@ -106,6 +107,12 @@ public class Entity{
     }
 
     public void SetPosition( int x, int y ){
+        OldPosition = new Rectangle(){
+            X = Position.X,
+            Y = Position.Y,
+            Width = Position.Width,
+            Height = Position.Height,
+        };
         Rectangle position = Position;
         position.X = x;
         position.Y = y;
@@ -126,17 +133,17 @@ public class Entity{
     }
 
     //This will check X and Y axis for collision, I'll do some optimization for it after some time
-    public virtual void HandleCollision( Rectangle entity, float elapsed = 0.0f ){
+    public virtual void HandleCollision( Rectangle collidingObject, float elapsed = 0.0f, string ObjectName = "" ){
         ChangePosition( 0, -YSpeed );
-        if( CheckCollision( entity ) == true )
+        if( CheckCollision( collidingObject ) == true )
             ChangePosition( -XSpeed, 0 );
         ChangePosition( 0, YSpeed );
-        if( CheckCollision( entity ) == true ){
+        if( CheckCollision( collidingObject ) == true ){
             if( YSpeed > 0 ){
-                SetPosition( Position.X,  entity.Y - Position.Height );
+                SetPosition( Position.X,  collidingObject.Y - Position.Height );
                 PhysicEngine.ResetTimer();
             } else {
-                SetPosition( Position.X, entity.Y + entity.Height );
+                SetPosition( Position.X, collidingObject.Y + collidingObject.Height );
             }
             YSpeed = 0;
         }

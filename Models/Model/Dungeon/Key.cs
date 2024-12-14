@@ -9,13 +9,13 @@ public class Key : Object{
     public Key(){
         IsPassable = false;
         IsPickupable = true;
-        ObjectName = "Keys";
+        Name = "Keys";
     }
 
     public void Load( ContentManager content ){
         SourceRectangle = new Rectangle(){
-            X = SourceLocationX[(int) Name.Key] * TextureWidth,
-            Y = SourceLocationY[(int) Name.Key] * TextureHeight,
+            X = SourceLocationX[(int)Helper.Constants.Dungeon.Name.Key] * TextureWidth,
+            Y = SourceLocationY[(int)Helper.Constants.Dungeon.Name.Key] * TextureHeight,
             Width = TextureWidth,
             Height = TextureHeight,
         };

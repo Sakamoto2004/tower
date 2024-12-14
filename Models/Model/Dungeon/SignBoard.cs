@@ -11,19 +11,19 @@ public class SignBoard : Object{
     public bool IsOpened{ get; set; }
     public SignBoard(){
         IsOpened = false;
-        ObjectName = "ClosedChest";
+        Name = "ClosedChest";
     }
 
     public void Load( ContentManager Content, bool right = true ){
         Rectangle temp = new Rectangle(){
-            X = SourceLocationX[(int) Name.RightSign ] * TextureWidth,
-            Y = SourceLocationY[(int) Name.RightSign ] * TextureHeight,
+            X = SourceLocationX[(int)Helper.Constants.Dungeon.Name.RightSign ] * TextureWidth,
+            Y = SourceLocationY[(int)Helper.Constants.Dungeon.Name.RightSign ] * TextureHeight,
             Width = TextureWidth,
             Height = TextureHeight,
         };
         if( right == false ){
-            temp.X = SourceLocationX[(int) Name.LeftSign ] * TextureWidth;
-            temp.Y = SourceLocationY[(int) Name.LeftSign ] * TextureHeight;
+            temp.X = SourceLocationX[(int)Helper.Constants.Dungeon.Name.LeftSign ] * TextureWidth;
+            temp.Y = SourceLocationY[(int)Helper.Constants.Dungeon.Name.LeftSign ] * TextureHeight;
         }
         SourceRectangle = temp;
         DefaultTexture = Content.Load<Texture2D>( TextureName );

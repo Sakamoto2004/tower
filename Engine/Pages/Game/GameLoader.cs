@@ -66,15 +66,20 @@ public class GameLoader{
         chest.SetPosition( 500, 300 );
         _map.AddObject( chest );
 
-        Key key = new Key();
-        key.Load( content );
-        key.SetPosition( 700, 300 );
-        _map.AddObject( key );
-
         SignBoard sign = new SignBoard();
         sign.Load( content, false );
         sign.SetPosition( 450, 200 ); 
         _map.AddObject( sign );
+
+        Bridge bridge = new Bridge();
+        bridge.Load( content, 1 );
+        bridge.SetPosition( 500, 200, 16 * 5);
+        _map.AddObject( bridge );
+
+        Key key = new Key();
+        key.Load( content );
+        key.SetPosition( 700, 300 );
+        _map.AddObject( key );
 
         _knight.Position = new Rectangle(){
             X = 150,

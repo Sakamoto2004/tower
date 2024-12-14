@@ -12,13 +12,13 @@ public class Door : Object{
         : base(){
         IsPassable = false;
         _isClosed = true;
-        ObjectName = "Door";
+        Name = "Door";
     }
 
     public void Load( ContentManager Content ){
         SourceRectangle = new Rectangle(){
-            X = SourceLocationX[(int) Name.UpperClosedDoor ] * TextureWidth,
-            Y = SourceLocationY[(int) Name.UpperClosedDoor ] * TextureHeight,
+            X = SourceLocationX[(int)Constants.Dungeon.Name.UpperClosedDoor ] * TextureWidth,
+            Y = SourceLocationY[(int)Constants.Dungeon.Name.UpperClosedDoor ] * TextureHeight,
             Width = TextureWidth,
             //There's 2 part of the door, upper and lower so we multiply by 2 here to get all the part of the door
             Height = TextureHeight * 2,
@@ -38,8 +38,8 @@ public class Door : Object{
         Rectangle temp = Position;
         if( _isClosed ){
             SourceRectangle = new Rectangle(){
-                X = SourceLocationX[(int) Name.UpperOpenedDoor ] * TextureWidth,
-                Y = SourceLocationY[(int) Name.UpperOpenedDoor ] * TextureHeight,
+                X = SourceLocationX[(int)Constants.Dungeon.Name.UpperOpenedDoor ] * TextureWidth,
+                Y = SourceLocationY[(int)Constants.Dungeon.Name.UpperOpenedDoor ] * TextureHeight,
                 Width = TextureWidth,
                 //There's 2 part of the door, upper and lower so we multiply by 2 here to get all the part of the door
                 Height = TextureHeight * 2,
@@ -48,8 +48,8 @@ public class Door : Object{
             temp.Width = TextureWidth;
         } else {
             SourceRectangle = new Rectangle(){
-                X = SourceLocationX[(int) Name.UpperClosedDoor ] * TextureWidth,
-                Y = SourceLocationY[(int) Name.UpperClosedDoor ] * TextureHeight,
+                X = SourceLocationX[(int)Constants.Dungeon.Name.UpperClosedDoor ] * TextureWidth,
+                Y = SourceLocationY[(int)Constants.Dungeon.Name.UpperClosedDoor ] * TextureHeight,
                 Width = TextureWidth,
                 //There's 2 part of the door, upper and lower so we multiply by 2 here to get all the part of the door
                 Height = TextureHeight * 2,

@@ -298,11 +298,11 @@ public class Knight : Entity{
         for( int i = 0; i < objects.Objects.Count; ++i ){
             Object temp = objects.Objects[i];
             if( temp.CheckCollision( GetPosition() ) ){
-                if( temp.IsPickupable && temp.ObjectName == "Keys" ){
+                if( temp.IsPickupable && temp.Name == "Keys" ){
                     _keys += 1;
                     objects.Objects.Remove( temp );
                 }
-                HandleCollision( temp.GetPosition(), elapsed );
+                HandleCollision( temp.GetPosition(), elapsed, temp.Name );
             }
         }
         XSpeed = 0;
@@ -441,10 +441,12 @@ public class Knight : Entity{
     }
 
     //Only use this when there's already collision on X axis
-    public bool IsGrabbable( Rectangle entity, float elapsed = 0.0f ){
+    public bool IsGrabbable( Rectangle entity, float elapsed = 0.0f, string objectName = "" ){
         Rectangle position = CalibratePosition();
         //Console.WriteLine("Grab position: " + (position.Y - position.Height * 1 / 10));
         //Console.WriteLine("entity position: " +  entity.Y );
+        if( objectName == "Bridge" )
+            return false;
         if( position.Y + position.Height * 1 / 3 < entity.Y ) 
             return false;
         if( position.Y > entity.Y )
@@ -453,13 +455,13 @@ public class Knight : Entity{
     }
 
     //This will check X and Y axis for collision, I'll do some optimization for it after some time
-    public override void HandleCollision( Rectangle entity, float elapsed = 0.0f ){
+    public override void HandleCollision( Rectangle entity, float elapsed = 0.0f, string name = "" ){
         //We already made change to the position, so this will reset 1 axis for checking collision at the other axis
         //The will reset the Y axis to check collision to the X axis 
         ChangePosition( 0, -YSpeed );
-        if( CheckCollision( entity ) == true ){
+        if( CheckCollision( entity ) == true && name != "Bridge" ){
             ChangePosition( -XSpeed, 0 );
-            if( IsGrabbable( entity ) ){
+            if( IsGrabbable( entity, 0.0f, name  ) ){
                 Grabbing( elapsed );
                 return;
             } else if( _isAttacking == 0 && _isDashing == false ){
@@ -468,16 +470,29 @@ public class Knight : Entity{
         }
         ChangePosition( 0, YSpeed );
         if( CheckCollision( entity ) == true ){
-            if( YSpeed > 0 ){
-                SetPosition( Position.X,  entity.Y - Position.Height );
-                PhysicEngine.ResetTimer();
-                _jumpTimer = Constants.Knight.JumpTime;
-                if( (_currentEquippedState == EquippedState.Falling || _currentUnequippedState == UnequippedState.Falling) && YSpeed > 16 )
-                    Landing( 0.01f );
+            if( name == "Bridge" ){
+                if( YSpeed < 0 )
+                    return;
+                //Is case of a bridge, we only want the entity to snap to the upper side of the object
+                if( OldPosition.X + OldPosition.Height * Scale < entity.X ){
+                    SetPosition( Position.X,  entity.Y - Position.Height );
+                    PhysicEngine.ResetTimer();
+                    _jumpTimer = Constants.Knight.JumpTime;
+                    if( (_currentEquippedState == EquippedState.Falling || _currentUnequippedState == UnequippedState.Falling) && YSpeed > 16 )
+                        Landing( 0.01f );
+                }
             } else {
-                SetPosition( Position.X, entity.Y + entity.Height );
+                if( YSpeed > 0 ){
+                    SetPosition( Position.X,  entity.Y - Position.Height );
+                    PhysicEngine.ResetTimer();
+                    _jumpTimer = Constants.Knight.JumpTime;
+                    if( (_currentEquippedState == EquippedState.Falling || _currentUnequippedState == UnequippedState.Falling) && YSpeed > 16 )
+                        Landing( 0.01f );
+                } else {
+                    SetPosition( Position.X, entity.Y + entity.Height );
+                }
+                YSpeed = 0;
             }
-            YSpeed = 0;
         }
     }
 
@@ -646,10 +661,10 @@ public class Knight : Entity{
         for( int i = 0; i < objects.Objects.Count; ++i ){
             Object temp = objects.Objects[i];
             if( temp.CheckCollision( CalibrateAttackHitbox(), false ) )
-                if( temp.ObjectName == "ClosedChest" && _keys > 0 ){
+                if( temp.Name == "ClosedChest" && _keys > 0 ){
                     temp.Interact( Constants.Knight.Action.Interact );
                     _keys -= 1;
-                } else if( temp.ObjectName != "ClosedChest" ){
+                } else if( temp.Name != "ClosedChest" ){
                     temp.Interact( Constants.Knight.Action.Interact );
                 }
         }

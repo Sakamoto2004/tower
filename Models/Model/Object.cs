@@ -15,7 +15,7 @@ public class Object{
     public SpriteEffects TextureEffect{ get; set; }
     public bool IsPassable{ get; set; }
     public bool IsPickupable{ get; set; }
-    public string ObjectName{ get; set; }
+    public string Name{ get; set; }
 
     public Object(){
         DefaultTexture = null;
@@ -27,14 +27,14 @@ public class Object{
         TextureEffect = SpriteEffects.None;
         IsPassable = true;
         IsPickupable = false;
-        ObjectName = "Object";
+        Name = "Object";
     }
 
     public virtual void LoadSource(){
         TextureEffect = SpriteEffects.None;
     }
 
-    public virtual void SetPosition( int x, int y ){
+    public virtual void SetPosition( int x, int y, int h = 0, int w = 0 ){
         Rectangle position = Position;
         position.X = x;
         position.Y = y;
@@ -60,9 +60,9 @@ public class Object{
     public virtual bool CheckCollision( Rectangle entity, bool hardCollision = true ){
         bool collided = false;
         //This collision check will check the left side of the entity
-        if (Position.X + Position.Width > entity.X &&
+        if (Position.X + GetPosition().Width > entity.X &&
             Position.X < entity.X + entity.Width && 
-            Position.Y + Position.Height > entity.Y &&
+            Position.Y + GetPosition().Height > entity.Y &&
             Position.Y < entity.Y + entity.Height 
             )
         {

@@ -11,13 +11,13 @@ public class Chest : Object{
     public bool IsOpened{ get; set; }
     public Chest(){
         IsOpened = false;
-        ObjectName = "ClosedChest";
+        Name = "ClosedChest";
     }
 
     public void Load( ContentManager Content ){
         SourceRectangle = new Rectangle(){
-            X = SourceLocationX[(int) Name.ClosedChest ] * TextureWidth,
-            Y = SourceLocationY[(int) Name.ClosedChest ] * TextureHeight,
+            X = SourceLocationX[(int)Helper.Constants.Dungeon.Name.ClosedChest ] * TextureWidth,
+            Y = SourceLocationY[(int)Helper.Constants.Dungeon.Name.ClosedChest ] * TextureHeight,
             Width = TextureWidth,
             Height = TextureHeight,
         };
@@ -36,10 +36,10 @@ public class Chest : Object{
         if( IsOpened )
             return;
         Rectangle temp = SourceRectangle;
-        temp.X = SourceLocationX[(int) Name.OpenedChest] * TextureWidth;
-        temp.Y = SourceLocationY[(int) Name.OpenedChest] * TextureHeight;
+        temp.X = SourceLocationX[(int)Helper.Constants.Dungeon.Name.OpenedChest] * TextureWidth;
+        temp.Y = SourceLocationY[(int)Helper.Constants.Dungeon.Name.OpenedChest] * TextureHeight;
         IsOpened = true;
         SourceRectangle = temp;
-        ObjectName = "OpenedChest";
+        Name = "OpenedChest";
     }
 }
